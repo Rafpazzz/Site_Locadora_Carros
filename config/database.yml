@@ -13,8 +13,12 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: root
-  password:
+
+  # CORREÇÃO AQUI: Voltamos a usar as variáveis de ambiente.
+  # Isso é OBRIGATÓRIO para o robô do GitHub funcionar.
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  
   socket: /var/run/mysqld/mysqld.sock
 
 development:
@@ -66,3 +70,4 @@ production:
     <<: *primary_production
     database: site_locadora_carros_production_cable
     migrations_paths: db/cable_migrate
+
