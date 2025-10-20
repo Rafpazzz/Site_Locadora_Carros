@@ -7,9 +7,11 @@ default: &default
   password:
   socket: /var/run/mysqld/mysqld.sock
 
+
 development:
   <<: *default
   database: site_locadora_carros
+
 
 
 production:
