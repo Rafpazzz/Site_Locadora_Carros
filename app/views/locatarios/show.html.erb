@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @locatario %>
+
+<div>
+  <%= link_to "Edit this locatario", edit_locatario_path(@locatario) %> |
+  <%= link_to "Back to locatarios", locatarios_path %>
+
+  <%= button_to "Destroy this locatario", @locatario, method: :delete %>
+</div>
