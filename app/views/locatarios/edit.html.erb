@@ -1,0 +1,12 @@
+<% content_for :title, "Editing locatario" %>
+
+<h1>Editing locatario</h1>
+
+<%= render "form", locatario: @locatario %>
+
+<br>
+
+<div>
+  <%= link_to "Show this locatario", @locatario %> |
+  <%= link_to "Back to locatarios", locatarios_path %>
+</div>
