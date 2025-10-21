@@ -65,6 +65,6 @@ class LocatariosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def locatario_params
-      params.expect(locatario: [ :nome, :cpf ])
+      params.require(:locatario).permit(:nome, :email, :cpf)
     end
 end
