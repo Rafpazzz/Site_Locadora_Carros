@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :emprestimos
+  resources :carros
   # devise_for :locatarios
   resources :locatarios
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

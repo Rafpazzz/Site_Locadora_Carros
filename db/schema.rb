@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_20_132526) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_21_200155) do
+  create_table "carros", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "nome", limit: 50, null: false
+    t.string "cor", limit: 50, null: false
+    t.date "ano", null: false
+    t.string "marca", limit: 50, null: false
+    t.string "combustivel", limit: 50
+    t.string "cambio", limit: 50, null: false
+    t.boolean "isDisponivel", default: true, null: false
+    t.string "placa", limit: 10, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "valor_diaria", limit: 53, default: 0.0, null: false
+  end
+
+  create_table "emprestimos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "locatario_id", null: false
+    t.bigint "carro_id", null: false
+    t.datetime "data_inicio", null: false
+    t.datetime "data_fim", null: false
+    t.datetime "data_devolucao"
+    t.decimal "valor_total", precision: 10, scale: 2
+    t.string "status", default: "Locado"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["carro_id"], name: "index_emprestimos_on_carro_id"
+    t.index ["locatario_id"], name: "index_emprestimos_on_locatario_id"
+  end
+
   create_table "locatarios", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "nome", null: false
     t.string "cpf", null: false
@@ -24,4 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_132526) do
     t.index ["email"], name: "index_locatarios_on_email", unique: true
     t.index ["reset_password_token"], name: "index_locatarios_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "emprestimos", "carros"
+  add_foreign_key "emprestimos", "locatarios"
 end
