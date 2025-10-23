@@ -1,0 +1,18 @@
+<%# app/views/admin/locatarios/index.html.erb %>
+
+<p style="color: green"><%= notice %></p>
+
+<h1>Locatários (Admin)</h1>
+
+<div id="locatarios">
+  <% @locatarios.each do |locatario| %>
+    <%= render "locatario", locatario: locatario %>
+    <p>
+      <%# CORREÇÃO DO SEU ERRO: [:admin, locatario] %>
+      <%= link_to "Show this locatario", [:admin, locatario] %>
+    </p>
+  <% end %>
+</div>
+
+<%# CORREÇÃO TAMBÉM: new_admin_locatario_path %>
+<%= link_to "New locatario", new_admin_locatario_path, class: "btn btn-primary" %>

@@ -1,4 +1,4 @@
-class LocatariosController < ApplicationController
+class Admin::LocatariosController < ApplicationController
   before_action :set_locatario, only: %i[ show edit update destroy ]
 
   # GET /locatarios or /locatarios.json

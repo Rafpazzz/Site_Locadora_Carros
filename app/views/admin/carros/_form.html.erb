@@ -1,0 +1,69 @@
+<%# CORREÇÃO: O 'model' agora precisa do :admin %>
+<%= form_with(model: [:admin, carro], class: "needs-validation") do |form| %>
+  <% if carro.errors.any? %>
+    <div class="alert alert-danger">
+      <h2><%= pluralize(carro.errors.count, "erro") %> impediu este carro de ser salvo:</h2>
+      <ul>
+        <% carro.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row g-3">
+    <%# --- Novos Campos --- %>
+    <div class="col-md-6">
+      <%= form.label :nome, class: "form-label" %>
+      <%= form.text_field :nome, class: "form-control", required: true %>
+    </div>
+
+    <div class="col-md-6">
+      <%= form.label :marca, class: "form-label" %>
+      <%= form.text_field :marca, class: "form-control", required: true %>
+    </div>
+    
+    <div class="col-md-4">
+      <%= form.label :placa, class: "form-label" %>
+      <%= form.text_field :placa, class: "form-control", required: true %>
+    </div>
+
+    <div class="col-md-4">
+      <%= form.label :cor, class: "form-label" %>
+      <%= form.text_field :cor, class: "form-control" %>
+    </div>
+    
+    <div class="col-md-4">
+      <%= form.label :ano, class: "form-label" %>
+      <%# O scaffold criou 'ano' como 'date'. Se for só o ano, mude para 'integer' na migration %>
+      <%= form.date_select :ano, { order: [:year, :month, :day], start_year: Date.today.year - 50, end_year: Date.today.year + 1 }, { class: "form-select" } %>
+    </div>
+
+    <div class="col-md-4">
+      <%= form.label :combustivel, class: "form-label" %>
+      <%# Lógica de "somente estes": %>
+      <%= form.select :combustivel, 
+            %w[gasolina alcool flex diesel], 
+            { prompt: 'Selecione o combustível' }, 
+            { class: "form-select", required: true } %>
+    </div>
+
+    <div class="col-md-4">
+      <%= form.label :cambio, class: "form-label" %>
+      <%# Lógica de "somente estes": %>
+      <%= form.select :cambio, 
+            %w[manual automatico], 
+            { prompt: 'Selecione o câmbio' }, 
+            { class: "form-select", required: true } %>
+    </div>
+
+    <div class="col-md-4">
+      <%= form.label :valor_diaria, class: "form-label" %>
+      <%= form.number_field :valor_diaria, class: "form-control", step: 0.01, required: true %>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%= form.submit "Salvar Carro", class: "btn btn-primary" %>
+  </div>
+<% end %>
