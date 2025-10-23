@@ -1,0 +1,18 @@
+<%# app/views/admin/carros/index.html.erb %>
+
+<p style="color: green"><%= notice %></p>
+
+<h1>Carros (Admin)</h1>
+
+<div id="carros">
+  <% @carros.each do |carro| %>
+    <%= render "carro", carro: carro %>
+    <p>
+      <%# CORREÇÃO AQUI: [:admin, carro] %>
+      <%= link_to "Show this carro", [:admin, carro] %>
+    </p>
+  <% end %>
+</div>
+
+<%# CORREÇÃO DO SEU ERRO: new_admin_carro_path %>
+<%= link_to "New carro", new_admin_carro_path, class: "btn btn-primary" %>

@@ -1,16 +1,47 @@
-<p style="color: green"><%= notice %></p>
+<%# app/views/carros/index.html.erb %>
 
-<% content_for :title, "Carros" %>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Nossos Carros para Locação</h1>
+    
+    <%# Link para o Painel de Admin (só deve aparecer se for admin) %>
+    <%# if current_locatario&.admin? %>
+    <%# link_to "Gerenciar Carros (Admin)", admin_carros_path, class: "btn btn-secondary" %>
+    <%# end %>
+  </div>
 
-<h1>Carros</h1>
+  <p>Bem-vindo, <%= current_locatario.nome %>! Escolha um carro para começar.</p>
 
-<div id="carros">
-  <% @carros.each do |carro| %>
-    <%= render carro %>
-    <p>
-      <%= link_to "Show this carro", carro %>
-    </p>
-  <% end %>
+  <%# -- Grade de Carros (Bootstrap Cards) -- %>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <% @carros.each do |carro| %>
+      <div class="col">
+        <div class="card h-100">
+          <%# (Opcional) Adicione uma imagem aqui %>
+          <%# <img src="..." class="card-img-top" alt="..."> %>
+          
+          <div class="card-body">
+            <h5 class="card-title"><%= carro.marca %> <%= carro.nome %></h5>
+            <p class="card-text">
+              <strong>Cor:</strong> <%= carro.cor %><br>
+              <strong>Ano:</strong> <%= carro.ano %><br>
+              <strong>Placa:</strong> <%= carro.placa %>
+            </p>
+            <h4 class="text-success">R$ <%= carro.valor_diaria %>/dia</h4>
+          </div>
+          
+          <div class="card-footer">
+            <%# O 'emprestimos_path' ainda não existe, mas este é o próximo passo %>
+            <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# -- Links de Paginação do Kaminari -- %>
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @carros %>
+  </div>
+
 </div>
-
-<%= link_to "New carro", new_carro_path %>

@@ -1,19 +1,11 @@
+# config/routes.rb
 Rails.application.routes.draw do
-  resources :emprestimos
-  resources :carros
-  # devise_for :locatarios
-  resources :locatarios
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
-
+  
+  # --- ROTAS PÚBLICAS / DEVISE ---
   devise_for :locatarios, controllers: { 
     registrations: 'locatarios/registrations' 
   }, 
-  
-  path: '', # Remove o prefixo "/locatarios/"
+  path: '', 
   path_names: { 
     sign_in: 'login',           
     sign_out: 'logout',        
@@ -21,10 +13,19 @@ Rails.application.routes.draw do
     edit: 'minha-conta'         
   }
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  resources :carros, only: [:index, :show]
+  resources :emprestimos, only: [:new, :create, :index, :show] 
+  
+  root "carros#index"
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # --- ROTAS ADMINISTRATIVAS ---
+  # O namespace :admin corrige seu erro 'admin_carros_path'
+  namespace :admin do
+    resources :locatarios
+    resources :carros
+    resources :emprestimos
+  end
+
+  # Rota de Health Check
+  get "up" => "rails/health#show", as: :rails_health_check
 end

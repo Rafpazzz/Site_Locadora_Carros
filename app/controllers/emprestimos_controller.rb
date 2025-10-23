@@ -1,70 +1,54 @@
+# app/controllers/emprestimos_controller.rb
 class EmprestimosController < ApplicationController
-  before_action :set_emprestimo, only: %i[ show edit update destroy ]
+  # Exige que o locatário esteja logado para QUALQUER ação
+  # neste controller (new, create, index, show).
+  before_action :authenticate_locatario!
 
-  # GET /emprestimos or /emprestimos.json
+  # GET /emprestimos (Mostra MEUS empréstimos)
   def index
-    @emprestimos = Emprestimo.all
+    # Graças ao Devise, podemos usar 'current_locatario'
+    @emprestimos = current_locatario.emprestimos.order(data_inicio: :desc)
   end
 
-  # GET /emprestimos/1 or /emprestimos/1.json
+  # GET /emprestimos/1 (Mostra o detalhe de UM dos meus empréstimos)
   def show
+    @emprestimo = current_locatario.emprestimos.find(params[:id])
   end
 
-  # GET /emprestimos/new
+  # GET /emprestimos/new (O formulário para alugar)
   def new
-    @emprestimo = Emprestimo.new
+    # Precisamos saber qual carro o usuário escolheu (veio do link)
+    @carro = Carro.find(params[:carro_id])
+    
+    # Criamos um empréstimo "em branco" para o formulário
+    @emprestimo = Emprestimo.new(carro: @carro)
   end
 
-  # GET /emprestimos/1/edit
-  def edit
-  end
-
-  # POST /emprestimos or /emprestimos.json
+  # POST /emprestimos (Salva o novo aluguel)
   def create
     @emprestimo = Emprestimo.new(emprestimo_params)
+    
+    # Associamos o empréstimo ao USUÁRIO LOGADO
+    @emprestimo.locatario = current_locatario
+    
+    # Definimos um status inicial
+    @emprestimo.status = 'pendente' 
 
-    respond_to do |format|
-      if @emprestimo.save
-        format.html { redirect_to @emprestimo, notice: "Emprestimo was successfully created." }
-        format.json { render :show, status: :created, location: @emprestimo }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @emprestimo.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /emprestimos/1 or /emprestimos/1.json
-  def update
-    respond_to do |format|
-      if @emprestimo.update(emprestimo_params)
-        format.html { redirect_to @emprestimo, notice: "Emprestimo was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @emprestimo }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @emprestimo.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /emprestimos/1 or /emprestimos/1.json
-  def destroy
-    @emprestimo.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to emprestimos_path, notice: "Emprestimo was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    if @emprestimo.save
+      redirect_to @emprestimo, notice: 'Carro alugado com sucesso!'
+    else
+      # Se falhar, precisamos do @carro de novo para mostrar o formulário
+      @carro = @emprestimo.carro 
+      render :new, status: :unprocessable_entity
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_emprestimo
-      @emprestimo = Emprestimo.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def emprestimo_params
-      params.require(:emprestimo).permit(:locatario_id, :carro_id, :data_inicio, :data_fim, :data_devolucao, :valor_total, :status)
-    end
+
+  # Strong Parameters para o formulário
+  def emprestimo_params
+    params.require(:emprestimo).permit(:carro_id, :data_inicio, :data_fim)
+  end
+
 end

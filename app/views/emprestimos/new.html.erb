@@ -1,11 +1,54 @@
-<% content_for :title, "New emprestimo" %>
+<%# app/views/emprestimos/new.html.erb %>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      
+      <h2>Confirmar Locação</h2>
+      <p>Você está logado como: <strong><%= current_locatario.email %></strong></p>
+      
+      <%# Card do Carro Escolhido %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><%= @carro.marca %> <%= @carro.modelo %></h5>
+          <p class="card-text">Placa: <%= @carro.placa %> | Ano: <%= @carro.ano %></p>
+          <h4 class="card-text text-success">R$ <%= @carro.valor_diaria %>/dia</h4>
+        </div>
+      </div>
 
-<h1>New emprestimo</h1>
+      <%# Formulário de Empréstimo %>
+      <%= form_with(model: @emprestimo) do |form| %>
+        
+        <%# Mostra erros de validação (ex: "Data de fim não pode ser antes de hoje") %>
+        <% if @emprestimo.errors.any? %>
+          <div class="alert alert-danger">
+            <h5><%= @emprestimo.errors.count %> erros impediram a locação:</h5>
+            <ul>
+              <% @emprestimo.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
 
-<%= render "form", emprestimo: @emprestimo %>
+        <%# Passa o ID do carro escondido %>
+        <%= form.hidden_field :carro_id, value: @carro.id %>
 
-<br>
+        <div class="mb-3">
+          <%= form.label :data_inicio, class: "form-label" %>
+          <%= form.date_field :data_inicio, class: "form-control" %>
+        </div>
 
-<div>
-  <%= link_to "Back to emprestimos", emprestimos_path %>
+        <div class="mb-3">
+          <%= form.label :data_fim, class: "form-label" %>
+          <%= form.date_field :data_fim, class: "form-control" %>
+        </div>
+        
+        <div class="actions">
+          <%= form.submit "Confirmar Aluguel", class: "btn btn-primary" %>
+          <%= link_to "Cancelar", carros_path, class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+      
+    </div>
+  </div>
 </div>

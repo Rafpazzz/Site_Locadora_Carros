@@ -1,0 +1,27 @@
+<%# app/views/admin/locatarios/_form.html.erb %>
+
+<%# CORREÇÃO AQUI: model: [:admin, locatario] %>
+<%= form_with(model: [:admin, locatario]) do |form| %>
+  <% if locatario.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(locatario.errors.count, "error") %> prohibited this locatario from being saved:</h2>
+
+      <ul>
+        <% locatario.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# (Todos os seus campos do formulário vêm aqui...) %>
+  <div class="mb-3">
+    <%= form.label :nome, class: "form-label" %>
+    <%= form.text_field :nome, class: "form-control" %>
+  </div>
+  <%# etc... %>
+
+  <div>
+    <%= form.submit class: "btn btn-success" %>
+  </div>
+<% end %>
