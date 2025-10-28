@@ -13,8 +13,8 @@ Rails.application.routes.draw do
     edit: 'minha-conta'         
   }
 
-  resources :carros, only: [:index, :show]
-  resources :emprestimos, only: [:new, :create, :index, :show] 
+  resources :carros, only: [:index]
+  resources :emprestimos, only: [:new] 
   
   root "carros#index"
 
