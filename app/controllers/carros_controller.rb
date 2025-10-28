@@ -1,7 +1,7 @@
 class CarrosController < ApplicationController
   
   def index
-    @carros = Carro.page(params[:page]).per(9) # Kaminari
+    @carros = Carro.order(:nome).page(params[:page]).per(9) 
   end
 
   

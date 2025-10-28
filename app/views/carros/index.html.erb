@@ -9,9 +9,20 @@
     <%# link_to "Gerenciar Carros (Admin)", admin_carros_path, class: "btn btn-secondary" %>
     <%# end %>
   </div>
-
-  <p>Bem-vindo, <%= current_locatario.nome %>! Escolha um carro para começar.</p>
-
+  
+  <%# Verificamos SE o usuário está logado antes de mostrar o nome %>
+  <% if locatario_signed_in? %>
+    <p class="lead">Bem-vindo de volta, <strong><%= current_locatario.nome %></strong>! Escolha um carro para começar.</p>
+  <% else %>
+    <%# Se não estiver logado, mostramos uma mensagem pública %>
+    <p class="lead">
+      Veja nossos carros disponíveis. 
+      <%= link_to "Faça login", new_locatario_session_path %> ou 
+      <%= link_to "cadastre-se", new_locatario_registration_path %> 
+      para alugar.
+    </p>
+  <% end %>
+  
   <%# -- Grade de Carros (Bootstrap Cards) -- %>
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <% @carros.each do |carro| %>
@@ -31,7 +42,8 @@
           </div>
           
           <div class="card-footer">
-            <%# O 'emprestimos_path' ainda não existe, mas este é o próximo passo %>
+            <%# --- CORREÇÃO AQUI --- %>
+            <%# Adicionamos a aspa de fechamento " e o %> no final da linha %>
             <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100" %>
           </div>
         </div>
