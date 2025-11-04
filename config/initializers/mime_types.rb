@@ -1,1 +1,1 @@
-Mime::Type.register "aplication/pdf", :pdf
+Mime::Type.register "application/pdf", :pdf
