@@ -5,47 +5,24 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%# 
-      ESTA É A CORREÇÃO:
-      Trocamos :app (um símbolo) por "application" (uma string), 
-      que é o nome real do seu arquivo de CSS (application.scss).
-    %>
     
     <%= javascript_importmap_tags %>
   </head>
-
   <body>
 
-    <%# --- 1. BARRA DE NAVEGAÇÃO COMPLETA (BOOTSTRAP) --- %>
+    <%# --- LAYOUT PÚBLICO (SEM LINKS DE ADMIN) --- %>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
         <%= link_to "Locadora Rails", root_path, class: "navbar-brand" %>
         
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
-            <%# Links para todos %>
+            <%# O único link de navegação é o público %>
             <%= link_to "Ver Carros", root_path, class: "nav-link" %>
-
-            <%# Links para quem ESTÁ LOGADO %>
-            <% if locatario_signed_in? %>
-              
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Painel Admin
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
-                  <li><%= link_to "Gerenciar Carros", admin_carros_path, class: "dropdown-item" %></li>
-                  <li><%= link_to "Gerenciar Locatários", admin_locatarios_path, class: "dropdown-item" %></li>
-                  <li><%= link_to "Gerenciar Empréstimos", admin_emprestimos_path, class: "dropdown-item" %></li>
-                </ul>
-              </li>
-
-            <% end %>
           </ul>
 
           <%# Links de Login/Logout na direita %>
@@ -60,7 +37,8 @@
                 <%= link_to "Minha Conta", edit_locatario_registration_path, class: "nav-link" %>
               </li>
               <li class="nav-item">
-                <%= link_to "Sair", destroy_locatario_session_path, class: "nav-link", data: { turbo_method: :delete } %>
+                <%# Esta é a correção do Logout (sem o 'data: ...') %>
+                <%= link_to "Sair", destroy_locatario_session_path, class: "nav-link" %>
               </li>
             <% else %>
               <%# Links para quem NÃO ESTÁ LOGADO %>
@@ -75,10 +53,8 @@
         </div>
       </div>
     </nav>
-    <%# --- FIM DA BARRA DE MENU --- %>
+    <%# --- FIM DA BARRA DE MENU PÚBLICA --- %>
 
-
-    <%# --- 2. ÁREA PARA MOSTRAR MENSAGENS (NECESSÁRIO PARA DEVISE) --- %>
     <div class="container mt-3">
       <% if notice %>
         <p class="alert alert-success"><%= notice %></p>
@@ -88,8 +64,6 @@
       <% end %>
     </div>
 
-
-    <%# --- 3. CONTEÚDO DA PÁGINA --- %>
     <main class="container">
       <%= yield %>
     </main>
