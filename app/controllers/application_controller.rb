@@ -7,6 +7,17 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def after_sign_in_path_for(resource)
+    # Verificamos se o 'resource' (o locatário) é um admin.
+    if resource.is_a?(Locatario) && resource.admin?
+      # Se for admin, vá para o painel de admin (a lista de carros do admin).
+      admin_carros_path
+    else
+      # Se for um usuário normal, vá para a página inicial (a lista pública).
+      root_path
+    end
+  end
+
   #metodo diz ao devise quais campos extras deve permitir salvar durante o cadastro
   def configure_permitted_parameters
     #para o formulario de cadastro

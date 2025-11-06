@@ -1,4 +1,4 @@
-class Admin::EmprestimosController < ApplicationController
+class Admin::EmprestimosController < Admin::BaseController
   before_action :set_emprestimo, only: %i[ show edit update destroy ]
 
   # GET /emprestimos or /emprestimos.json
