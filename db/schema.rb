@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_06_120956) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_08_203100) do
   create_table "carros", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "nome", limit: 50, null: false
     t.string "cor", limit: 50, null: false
@@ -22,7 +22,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_120956) do
     t.string "placa", limit: 10, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "valor_diaria", limit: 53, default: 0.0, null: false
+    t.decimal "valor_diaria", precision: 10, default: "0", null: false
   end
 
   create_table "emprestimos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -31,7 +31,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_120956) do
     t.datetime "data_inicio", null: false
     t.datetime "data_fim", null: false
     t.datetime "data_devolucao"
-    t.decimal "valor_total", precision: 10, scale: 2
+    t.decimal "valor_total", precision: 10
     t.string "status", default: "Locado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

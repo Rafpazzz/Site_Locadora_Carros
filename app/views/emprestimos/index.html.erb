@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Meus Empréstimos</h1>
+    <%= link_to "Alugar outro carro", root_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @emprestimos.empty? %>
+    <div class="alert alert-info">
+      Você ainda não fez nenhum aluguer.
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Carro</th>
+            <th scope="col">Placa</th>
+            <th scope="col">Data de Início</th>
+            <th scope="col">Data de Fim</th>
+            <th scope="col">Valor Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @emprestimos.each do |emp| %>
+            <tr>
+              <td><%= emp.carro.marca %> <%= emp.carro.nome %></td>
+              <td><%= emp.carro.placa %></td>
+              <td><%= l emp.data_inicio, format: :short %></td>
+              <td><%= l emp.data_fim, format: :short %></td>
+              <td><%= number_to_currency(emp.valor_total) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

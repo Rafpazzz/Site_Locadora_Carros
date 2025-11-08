@@ -1,54 +1,58 @@
 # app/controllers/emprestimos_controller.rb
 class EmprestimosController < ApplicationController
-  # Exige que o locatário esteja logado para QUALQUER ação
-  # neste controller (new, create, index, show).
+  # Todos que não são admin precisam estar logados para ver estas páginas
   before_action :authenticate_locatario!
 
-  # GET /emprestimos (Mostra MEUS empréstimos)
+  # GET /emprestimos (A página "Meus Empréstimos")
   def index
-    # Graças ao Devise, podemos usar 'current_locatario'
+    # Mostra apenas os empréstimos do utilizador que está logado
     @emprestimos = current_locatario.emprestimos.order(data_inicio: :desc)
-  end
-
-  # GET /emprestimos/1 (Mostra o detalhe de UM dos meus empréstimos)
-  def show
-    @emprestimo = current_locatario.emprestimos.find(params[:id])
+    
+    # Você PRECISA criar a view para isto:
+    # Crie o arquivo: app/views/emprestimos/index.html.erb
   end
 
   # GET /emprestimos/new (O formulário para alugar)
   def new
-    # Precisamos saber qual carro o usuário escolheu (veio do link)
+    @emprestimo = Emprestimo.new
+    # Precisamos de saber qual carro está a ser alugado (vem da URL)
     @carro = Carro.find(params[:carro_id])
-    
-    # Criamos um empréstimo "em branco" para o formulário
-    @emprestimo = Emprestimo.new(carro: @carro)
   end
 
-  # POST /emprestimos (Salva o novo aluguel)
+  # POST /emprestimos (A ação de salvar)
   def create
+    @carro = Carro.find(params[:emprestimo][:carro_id])
     @emprestimo = Emprestimo.new(emprestimo_params)
     
-    # Associamos o empréstimo ao USUÁRIO LOGADO
+    # --- LÓGICA IMPORTANTE ---
+    # Associa o empréstimo ao utilizador logado
     @emprestimo.locatario = current_locatario
-    
-    # Definimos um status inicial
-    @emprestimo.status = 'pendente' 
+    # Associa o empréstimo ao carro
+    @emprestimo.carro = @carro
+    # --- FIM DA LÓGICA ---
 
     if @emprestimo.save
-      redirect_to @emprestimo, notice: 'Carro alugado com sucesso!'
+      # --- ESTA É A CORREÇÃO DO SEU ERRO ---
+      # Em vez de: redirect_to @emprestimo (que vai para o 'show')
+      # Mude para:
+      redirect_to emprestimos_path, notice: "Aluguel confirmado com sucesso! O valor total é R$ #{@emprestimo.valor_total}."
     else
-      # Se falhar, precisamos do @carro de novo para mostrar o formulário
-      @carro = @emprestimo.carro 
+      # Se falhar (ex: data errada), mostre o formulário 'new' novamente
       render :new, status: :unprocessable_entity
     end
   end
 
-  private
-
-
-  # Strong Parameters para o formulário
-  def emprestimo_params
-    params.require(:emprestimo).permit(:carro_id, :data_inicio, :data_fim)
+  # Esta ação (show) causou o seu erro. 
+  # Não a estamos a usar por agora, mas vamos deixá-la aqui.
+  def show
+    # O seu erro antigo (...17-05-58.png) foi corrigido
+    @emprestimo = current_locatario.emprestimos.find(params[:id])
   end
 
+  private
+
+  # Define quais parâmetros do formulário são permitidos
+  def emprestimo_params
+    params.require(:emprestimo).permit(:data_inicio, :data_fim, :carro_id)
+  end
 end
