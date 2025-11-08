@@ -4,24 +4,27 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Nossos Carros para Locação</h1>
     
+    <%# --- LINKS DE EXPORTAÇÃO (REQUISITOS D E G) --- %>
+    <div class="btn-group" role="group">
+      <%# Link para CSV %>
+      <%= link_to "Exportar CSV", carros_path(format: :csv), class: "btn btn-success" %>
+      <%# Link para PDF (Listagem de Consulta) %>
+      <%= link_to "Gerar PDF", carros_path(format: :pdf), class: "btn btn-danger", target: :_blank %>
+    </div>
+    <%# --------------------------------------------- %>
+
     <%# Link para o Painel de Admin (só deve aparecer se for admin) %>
     <%# if current_locatario&.admin? %>
     <%# link_to "Gerenciar Carros (Admin)", admin_carros_path, class: "btn btn-secondary" %>
     <%# end %>
   </div>
   
-  <%# Verificamos SE o usuário está logado antes de mostrar o nome %>
-  <% if locatario_signed_in? %>
-    <p class="lead">Bem-vindo de volta, <strong><%= current_locatario.nome %></strong>! Escolha um carro para começar.</p>
-  <% else %>
-    <%# Se não estiver logado, mostramos uma mensagem pública %>
-    <p class="lead">
-      Veja nossos carros disponíveis. 
-      <%= link_to "Faça login", new_locatario_session_path %> ou 
-      <%= link_to "cadastre-se", new_locatario_registration_path %> 
-      para alugar.
-    </p>
-  <% end %>
+  <p class="lead">
+    Veja nossos carros disponíveis.
+    <%= link_to "Faça login", new_locatario_session_path %> ou 
+    <%= link_to "cadastre-se", new_locatario_registration_path %> 
+    para alugar.
+  </p>
   
   <%# -- Grade de Carros (Bootstrap Cards) -- %>
   <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -29,7 +32,6 @@
       <div class="col">
         <div class="card h-100">
           <%# (Opcional) Adicione uma imagem aqui %>
-          <%# <img src="..." class="card-img-top" alt="..."> %>
           
           <div class="card-body">
             <h5 class="card-title"><%= carro.marca %> <%= carro.nome %></h5>
@@ -42,8 +44,6 @@
           </div>
           
           <div class="card-footer">
-            <%# --- CORREÇÃO AQUI --- %>
-            <%# Adicionamos a aspa de fechamento " e o %> no final da linha %>
             <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100" %>
           </div>
         </div>
