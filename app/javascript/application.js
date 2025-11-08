@@ -1,4 +1,7 @@
-import * as bootstrap from "bootstrap"
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+// app/javascript/application.js
+
+// Importa o Turbo (que faz o 'data: { turbo_method: :delete }' funcionar)
 import "@hotwired/turbo-rails"
-import "controllers"
+
+// Importa os seus controllers do Stimulus
+import "./controllers"
