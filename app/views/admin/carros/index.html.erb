@@ -1,18 +1,29 @@
-<%# app/views/admin/carros/index.html.erb %>
-
-<p style="color: green"><%= notice %></p>
-
-<h1>Carros (Admin)</h1>
-
-<div id="carros">
-  <% @carros.each do |carro| %>
-    <%= render "carro", carro: carro %>
-    <p>
-      <%# CORREÇÃO AQUI: [:admin, carro] %>
-      <%= link_to "Show this carro", [:admin, carro] %>
-    </p>
-  <% end %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold text-primary">Gerenciar Carros</h1>
+  <%= link_to "+ Novo Carro", new_admin_carro_path, class: "btn btn-success shadow-sm" %>
 </div>
 
-<%# CORREÇÃO DO SEU ERRO: new_admin_carro_path %>
-<%= link_to "New carro", new_admin_carro_path, class: "btn btn-primary" %>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <% @carros.each do |carro| %>
+    <div class="col">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
+          <p class="card-text text-muted">
+            <strong>Cor:</strong> <%= carro.cor %><br>
+            <strong>Ano:</strong> <%= carro.ano %><br>
+            <strong>Placa:</strong> <%= carro.placa %><br>
+          </p>
+          <p class="fw-bold text-success">R$ <%= carro.valor_diaria %>/dia</p>
+        </div>
+        <div class="card-footer bg-transparent border-top d-flex justify-content-between">
+          <%= link_to "Ver", [:admin, carro], class: "btn btn-primary btn-sm" %>
+          <%= link_to "Editar", edit_admin_carro_path(carro), class: "btn btn-warning btn-sm text-white" %>
+          <%= link_to "Excluir", admin_carro_path(carro),
+                      data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
+                      class: "btn btn-danger btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -1,59 +1,60 @@
-<%# app/views/carros/index.html.erb %>
+<div class="container mt-5">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold text-primary mb-3 mb-md-0">
+      🚘 Nossos Carros para Locação
+    </h1>
 
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Nossos Carros para Locação</h1>
-    
-    <%# --- LINKS DE EXPORTAÇÃO (REQUISITOS D E G) --- %>
-    <div class="btn-group" role="group">
-      <%# Link para CSV %>
-      <%= link_to "Exportar CSV", carros_path(format: :csv), class: "btn btn-success" %>
-      <%# Link para PDF (Listagem de Consulta) %>
-      <%= link_to "Gerar PDF", carros_path(format: :pdf), class: "btn btn-danger", target: :_blank %>
+    <div class="btn-group shadow-sm" role="group">
+      <%= link_to "Exportar CSV", carros_path(format: :csv), class: "btn btn-outline-success" %>
+      <%= link_to "Gerar PDF", carros_path(format: :pdf), class: "btn btn-outline-danger", target: :_blank %>
     </div>
-    <%# --------------------------------------------- %>
-
-    <%# Link para o Painel de Admin (só deve aparecer se for admin) %>
-    <%# if current_locatario&.admin? %>
-    <%# link_to "Gerenciar Carros (Admin)", admin_carros_path, class: "btn btn-secondary" %>
-    <%# end %>
   </div>
-  
-  <p class="lead">
-    Veja nossos carros disponíveis.
-    <%= link_to "Faça login", new_locatario_session_path %> ou 
-    <%= link_to "cadastre-se", new_locatario_registration_path %> 
-    para alugar.
+
+  <p class="lead text-muted mb-5">
+    Confira os veículos disponíveis para locação.
+    <%= link_to "Faça login", new_locatario_session_path, class: "link-primary text-decoration-none fw-semibold" %> 
+    ou 
+    <%= link_to "cadastre-se", new_locatario_registration_path, class: "link-primary text-decoration-none fw-semibold" %> 
+    para garantir o seu carro hoje mesmo!
   </p>
-  
-  <%# -- Grade de Carros (Bootstrap Cards) -- %>
+
+  <!-- Grade de Carros -->
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <% @carros.each do |carro| %>
       <div class="col">
-        <div class="card h-100">
-          <%# (Opcional) Adicione uma imagem aqui %>
-          
+        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+          <!-- Imagem opcional -->
+          <%= image_tag("car-placeholder.jpg", class: "card-img-top", alt: "Imagem do carro") if carro.respond_to?(:imagem) && carro.imagem.present? %>
+
           <div class="card-body">
-            <h5 class="card-title"><%= carro.marca %> <%= carro.nome %></h5>
-            <p class="card-text">
-              <strong>Cor:</strong> <%= carro.cor %><br>
-              <strong>Ano:</strong> <%= carro.ano %><br>
-              <strong>Placa:</strong> <%= carro.placa %>
+            <h5 class="card-title text-dark fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
+            <p class="card-text mb-3">
+              <span class="d-block"><strong>Cor:</strong> <%= carro.cor %></span>
+              <span class="d-block"><strong>Ano:</strong> <%= carro.ano %></span>
+              <span class="d-block"><strong>Placa:</strong> <%= carro.placa %></span>
             </p>
-            <h4 class="text-success">R$ <%= carro.valor_diaria %>/dia</h4>
+            <h4 class="text-success fw-bold">R$ <%= carro.valor_diaria %>/dia</h4>
           </div>
-          
-          <div class="card-footer">
-            <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100" %>
+
+          <div class="card-footer bg-transparent border-0 pb-4">
+            <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
           </div>
         </div>
       </div>
     <% end %>
   </div>
 
-  <%# -- Links de Paginação do Kaminari -- %>
-  <div class="d-flex justify-content-center mt-4">
+  <!-- Paginação -->
+  <div class="d-flex justify-content-center mt-5">
     <%= paginate @carros %>
   </div>
-
 </div>
+
+<!-- Estilo adicional leve -->
+<style>
+  .hover-shadow:hover {
+    transform: translateY(-5px);
+    transition: 0.2s ease;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  }
+</style>

@@ -5,3 +5,4 @@ import "@hotwired/turbo-rails"
 
 // Importa os seus controllers do Stimulus
 import "./controllers"
+import * as bootstrap from "bootstrap"
