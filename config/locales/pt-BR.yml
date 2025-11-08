@@ -1,0 +1,20 @@
+pt-BR:
+  # --- Para corrigir o erro da data: 'l(data, format: :short)' ---
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+  
+  # --- Para que 'l(data_inicio)' funcione (caso seja só 'date') ---
+  date:
+    formats:
+      short: "%d/%m/%Y" 
+
+  # --- Para corrigir o erro do dinheiro: 'number_to_currency' ---
+  number:
+    currency:
+      format:
+        unit: "R$"         # Símbolo da moeda
+        precision: 2       # Casas decimais
+        separator: ","     # Separador decimal
+        delimiter: "."     # Separador de milhar
+        format: "%u %n"    # Formato: R$ 1.234,56
