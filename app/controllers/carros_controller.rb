@@ -23,5 +23,4 @@ def index
     @carro = Carro.find(params[:id])
   end
 
-
 end
