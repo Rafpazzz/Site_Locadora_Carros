@@ -1,10 +1,20 @@
-<p style="color: green"><%= notice %></p>
-
-<%= render @carro %>
+<%# app/views/admin/carros/show.html.erb %>
 
 <div>
-  <%= link_to "Edit this carro", edit_carro_path(@carro) %> |
-  <%= link_to "Back to carros", carros_path %>
+  <%# Detalhes do Carro %>
+  <p><strong>Marca:</strong> <%= @carro.marca %></p>
+  <p><strong>Nome:</strong> <%= @carro.nome %></p>
+  <p><strong>Placa:</strong> <%= @carro.placa %></p>
+  <p><strong>Valor Diária:</strong> <%= number_to_currency(@carro.valor_diaria) %></p>
+  <p><strong>Disponível:</strong> <%= @carro.isDisponivel? ? "Sim" : "Não" %></p>
+</div>
 
-  <%= button_to "Destroy this carro", @carro, method: :delete %>
+<hr>
+
+<div class="d-flex gap-2">
+
+  <%= link_to "Editar este carro", edit_admin_carro_path(@carro), class: "btn btn-secondary" %>
+
+  <%= button_to "Excluir este carro", [:admin, @carro], method: :delete, data: { turbo_confirm: "Tem certeza?" }, class: "btn btn-danger" %>
+  
 </div>

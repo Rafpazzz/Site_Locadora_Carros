@@ -1,10 +1,34 @@
-<p style="color: green"><%= notice %></p>
+<%# app/views/admin/emprestimos/show.html.erb %>
 
-<%= render @emprestimo %>
+<h1>Detalhes do Empréstimo #<%= @emprestimo.id %></h1>
 
-<div>
-  <%= link_to "Edit this emprestimo", edit_emprestimo_path(@emprestimo) %> |
-  <%= link_to "Back to emprestimos", emprestimos_path %>
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="card-title">Resumo</h5>
+    
+    <%# Verifica se o locatário e o carro existem antes de tentar mostrar o nome/marca %>
+    <p><strong>Locatário:</strong> <%= @emprestimo.locatario.try(:nome) || "Locatário não encontrado" %></p>
+    <p><strong>Carro:</strong> <%= @emprestimo.carro.try(:marca) %> <%= @emprestimo.carro.try(:nome) || "Carro não encontrado" %></p>
+    <p><strong>Status:</strong> <span class="badge bg-primary fs-6"><%= @emprestimo.status %></span></p>
+  </div>
+  
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>Data de Início:</strong> <%= l @emprestimo.data_inicio, format: :short %></li>
+    <li class="list-group-item"><strong>Data de Fim:</strong> <%= l @emprestimo.data_fim, format: :short %></li>
+    <li class="list-group-item"><strong>Valor Total:</strong> <%= number_to_currency(@emprestimo.valor_total) %></li>
+  </ul>
+</div>
 
-  <%= button_to "Destroy this emprestimo", @emprestimo, method: :delete %>
+<hr>
+
+<%# Links de Ação Corrigidos %>
+<div class="d-flex gap-2">
+  <%# Rota de admin 'edit' %>
+  <%= link_to "Editar Empréstimo", edit_admin_emprestimo_path(@emprestimo), class: "btn btn-secondary" %>
+  
+  <%# Rota de admin 'index' %>
+  <%= link_to "Voltar aos Empréstimos", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
+  
+  <%# Rota de admin 'destroy' %>
+  <%= button_to "Excluir Empréstimo", [:admin, @emprestimo], method: :delete, data: { turbo_confirm: "Tem certeza?" }, class: "btn btn-danger" %>
 </div>

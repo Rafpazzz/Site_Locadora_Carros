@@ -1,22 +1,34 @@
-<%= form_with(model: emprestimo) do |form| %>
-  <% if emprestimo.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(emprestimo.errors.count, "error") %> prohibited this emprestimo from being saved:</h2>
+<%# app/views/admin/emprestimos/_form.html.erb %>
 
-      <ul>
-        <% emprestimo.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= form_with(model: [:admin, emprestimo]) do |form| %>
+  <div class="card shadow-sm border-0">
+    <div class="card-body bg-light">
+      
+      <% if emprestimo.errors.any? %>
+        <div class="alert alert-danger">
+          <h5><%= pluralize(emprestimo.errors.count, "erro") %> impediram o salvamento:</h5>
+          <ul class="mb-0">
+            <% emprestimo.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+  <%= form.label :status, class: "form-label fw-semibold" %>
+
+  <%= form.select :status, 
+        options_for_select(['Pendente', 'Locado', 'Devolvido'], emprestimo.status), 
+        { prompt: 'Selecione um status' }, 
+        { class: "form-select" } %>
+</div>
     </div>
-  <% end %>
 
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.text_field :status %>
-  </div>
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+      <%= link_to "← Voltar para empréstimos", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
 
-  <div>
-    <%= form.submit %>
+      <%= form.submit "Atualizar Empréstimo", class: "btn btn-primary" %>
+    </div>
   </div>
 <% end %>
