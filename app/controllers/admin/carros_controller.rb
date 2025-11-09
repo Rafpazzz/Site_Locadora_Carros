@@ -62,7 +62,7 @@ class Admin::CarrosController < Admin::BaseController
     params.require(:carro).permit(
       :nome, 
       :cor, 
-      :ano, 
+      :ano_para_select, 
       :marca, 
       :combustivel, 
       :cambio, 

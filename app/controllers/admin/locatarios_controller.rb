@@ -1,32 +1,34 @@
 class Admin::LocatariosController < Admin::BaseController
   before_action :set_locatario, only: %i[ show edit update destroy ]
 
-  # GET /locatarios or /locatarios.json
+  # GET /admin/locatarios
   def index
     @locatarios = Locatario.all
   end
 
-  # GET /locatarios/1 or /locatarios/1.json
+  # GET /admin/locatarios/1
   def show
   end
 
-  # GET /locatarios/new
+  # GET /admin/locatarios/new
   def new
     @locatario = Locatario.new
   end
 
-  # GET /locatarios/1/edit
+  # GET /admin/locatarios/1/edit
   def edit
   end
 
-  # POST /locatarios or /locatarios.json
+  # POST /admin/locatarios
   def create
     @locatario = Locatario.new(locatario_params)
 
     respond_to do |format|
       if @locatario.save
-        format.html { redirect_to @locatario, notice: "Locatario was successfully created." }
-        format.json { render :show, status: :created, location: @locatario }
+        # --- CORREÇÃO ---
+        # Redireciona para a rota de admin
+        format.html { redirect_to [:admin, @locatario], notice: "Locatário foi criado com sucesso." }
+        format.json { render :show, status: :created, location: [:admin, @locatario] }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @locatario.errors, status: :unprocessable_entity }
@@ -34,12 +36,14 @@ class Admin::LocatariosController < Admin::BaseController
     end
   end
 
-  # PATCH/PUT /locatarios/1 or /locatarios/1.json
+  # PATCH/PUT /admin/locatarios/1
   def update
     respond_to do |format|
       if @locatario.update(locatario_params)
-        format.html { redirect_to @locatario, notice: "Locatario was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @locatario }
+        # --- CORREÇÃO (O seu erro estava aqui) ---
+        # Redireciona para a rota de admin
+        format.html { redirect_to [:admin, @locatario], notice: "Locatário foi atualizado com sucesso.", status: :see_other }
+        format.json { render :show, status: :ok, location: [:admin, @locatario] }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @locatario.errors, status: :unprocessable_entity }
@@ -47,24 +51,27 @@ class Admin::LocatariosController < Admin::BaseController
     end
   end
 
-  # DELETE /locatarios/1 or /locatarios/1.json
+  # DELETE /admin/locatarios/1
   def destroy
     @locatario.destroy!
 
     respond_to do |format|
-      format.html { redirect_to locatarios_path, notice: "Locatario was successfully destroyed.", status: :see_other }
+      # --- CORREÇÃO ---
+      # Redireciona para a rota index de admin
+      format.html { redirect_to admin_locatarios_path, notice: "Locatário foi excluído com sucesso.", status: :see_other }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    
     def set_locatario
-      @locatario = Locatario.find(params.expect(:id))
+      # --- CORREÇÃO ---
+      # A forma padrão de buscar o parâmetro :id
+      @locatario = Locatario.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def locatario_params
-      params.require(:locatario).permit(:nome, :email, :cpf)
+      params.require(:locatario).permit(:nome, :email, :admin)
     end
 end

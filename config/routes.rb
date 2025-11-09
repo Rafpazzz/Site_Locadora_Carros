@@ -2,7 +2,9 @@
 Rails.application.routes.draw do
   
   devise_for :locatarios, controllers: { 
-    registrations: 'locatarios/registrations' 
+    registrations: 'locatarios/registrations',
+    # Informa ao Devise para usar o seu controller de 'sessions' personalizado
+    sessions: 'locatarios/sessions'
   }, 
   path: '', 
   path_names: { 

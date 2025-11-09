@@ -10,44 +10,43 @@
     </div>
   </div>
 
-  <p class="lead text-muted mb-4">
-    Confira os veículos disponíveis para locação.
-    <%= link_to "Faça login", new_locatario_session_path, class: "link-primary text-decoration-none fw-semibold" %> 
-    ou 
-    <%= link_to "cadastre-se", new_locatario_registration_path, class: "link-primary text-decoration-none fw-semibold" %> 
-    para garantir o seu carro hoje mesmo!
-  </p>
+  <%# --- CORREÇÃO 1: Esconder a Mensagem --- %>
+  <%# Esta mensagem só aparece se o utilizador NÃO estiver logado %>
+  <% unless locatario_signed_in? %>
+    <p class="lead text-muted mb-4">
+      Confira os veículos disponíveis para locação.
+      <%= link_to "Faça login", new_locatario_session_path, class: "link-primary text-decoration-none fw-semibold" %> 
+      ou 
+      <%= link_to "cadastre-se", new_locatario_registration_path, class: "link-primary text-decoration-none fw-semibold" %> 
+      para garantir o seu carro hoje mesmo!
+    </p>
+  <% end %>
+  <%# --- FIM DA CORREÇÃO 1 --- %>
 
-  <!-- 🔍 Barra de Pesquisa e Filtros -->
   <div class="card shadow-sm mb-5 border-0">
     <div class="card-body">
       <%= form_with url: carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
         
-        <!-- Busca geral -->
         <div class="col-md-4">
           <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
           <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
         </div>
 
-        <!-- Filtro por marca -->
         <div class="col-md-3">
           <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
           <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
         </div>
 
-        <!-- Filtro por câmbio -->
         <div class="col-md-2">
           <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
-          <%= select_tag :cambio, options_for_select(["manual", "automático"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
+          <%= select_tag :cambio, options_for_select(["manual", "automatico"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
         </div>
 
-        <!-- Filtro por combustível -->
         <div class="col-md-2">
           <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
-          <%= select_tag :combustivel, options_for_select(["gasolina", "álcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+          <%= select_tag :combustivel, options_for_select(["gasolina", "alcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
         </div>
 
-        <!-- Botões -->
         <div class="col-md-1 d-grid">
           <%= submit_tag "Filtrar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
         </div>
@@ -59,7 +58,6 @@
     </div>
   </div>
 
-  <!-- 🚗 Grade de Carros -->
   <div class="row row-cols-1 row-cols-md-3 g-4">
     <% if @carros.any? %>
       <% @carros.each do |carro| %>
@@ -71,14 +69,23 @@
               <h5 class="card-title text-dark fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
               <p class="card-text mb-3">
                 <span class="d-block"><strong>Cor:</strong> <%= carro.cor %></span>
-                <span class="d-block"><strong>Ano:</strong> <%= carro.ano %></span>
+                <%# Corrigido para ler o .year da data %>
+                <span class="d-block"><strong>Ano:</strong> <%= carro.ano.year %></span> 
                 <span class="d-block"><strong>Placa:</strong> <%= carro.placa %></span>
               </p>
-              <h4 class="text-success fw-bold">R$ <%= carro.valor_diaria %>/dia</h4>
+              <%# Corrigido para usar o helper de moeda %>
+              <h4 class="text-success fw-bold"><%= number_to_currency(carro.valor_diaria) %>/dia</h4>
             </div>
 
             <div class="card-footer bg-transparent border-0 pb-4">
-              <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
+              <%# --- CORREÇÃO 2: Esconder o Botão --- %>
+              <%# O botão só aparece se o utilizador estiver logado %>
+              <% if locatario_signed_in? %>
+                <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
+              <% else %>
+                <%= link_to "Faça login para alugar", new_locatario_session_path, class: "btn btn-secondary w-100 shadow-sm disabled" %>
+              <% end %>
+              <%# --- FIM DA CORREÇÃO 2 --- %>
             </div>
           </div>
         </div>
@@ -91,13 +98,11 @@
     <% end %>
   </div>
 
-  <!-- Paginação -->
   <div class="d-flex justify-content-center mt-5">
     <%= paginate @carros %>
   </div>
 </div>
 
-<!-- Efeito hover -->
 <style>
   .hover-shadow:hover {
     transform: translateY(-5px);

@@ -1,10 +1,35 @@
-<p style="color: green"><%= notice %></p>
+<%# app/views/admin/locatarios/show.html.erb %>
 
-<%= render @locatario %>
+<h1>Detalhes do Locatário</h1>
 
-<div>
-  <%= link_to "Edit this locatario", edit_locatario_path(@locatario) %> |
-  <%= link_to "Back to locatarios", locatarios_path %>
+<%# Mostra os detalhes do locatário %>
+<div class="mb-3">
+  <p><strong>Nome:</strong> <%= @locatario.nome %></p>
+  <p><strong>Email:</strong> <%= @locatario.email %></p>
+  <p><strong>CPF:</strong> <%= @locatario.cpf %></p>
+  <p>
+    <strong>Admin:</strong>
+    <% if @locatario.admin? %>
+      <span class="badge bg-success">Sim</span>
+    <% else %>
+      <span class="badge bg-secondary">Não</span>
+    <% end %>
+  </p>
+</div>
 
-  <%= button_to "Destroy this locatario", @locatario, method: :delete %>
+<hr>
+
+<%# Links de Ação Corrigidos %>
+<div class="d-flex gap-2">
+  <%# --- CORREÇÃO --- %>
+  <%# Adiciona 'admin_' ao path %>
+  <%= link_to "Editar locatário", edit_admin_locatario_path(@locatario), class: "btn btn-secondary" %>
+
+  <%# --- CORREÇÃO --- %>
+  <%# Usa o path de index do 'admin_' %>
+  <%= link_to "Voltar aos locatários", admin_locatarios_path, class: "btn btn-outline-secondary" %>
+
+  <%# --- CORREÇÃO --- %>
+  <%# Usa o contexto [:admin, @locatario] para o destroy %>
+  <%= button_to "Excluir locatário", [:admin, @locatario], method: :delete, data: { turbo_confirm: "Tem certeza? Esta ação é irreversível." }, class: "btn btn-danger" %>
 </div>

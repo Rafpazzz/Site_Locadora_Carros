@@ -1,0 +1,36 @@
+<%# app/views/carros/shared/_filters.html.erb %>
+
+<div class="card shadow-sm mb-5 border-0">
+  <div class="card-body">
+    <%= form_with url: carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+      
+      <div class="col-md-4">
+        <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
+        <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
+      </div>
+
+      <div class="col-md-3">
+        <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
+        <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
+        <%= select_tag :cambio, options_for_select(["manual", "automatico"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
+        <%= select_tag :combustivel, options_for_select(["gasolina", "alcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+      </div>
+
+      <div class="col-md-1 d-grid">
+        <%= submit_tag "Filtrar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
+      </div>
+
+      <div class="col-md-12 d-flex justify-content-end">
+        <%= link_to "Limpar filtros", carros_path, class: "btn btn-link text-secondary text-decoration-none" %>
+      </div>
+    <% end %>
+  </div>
+</div>
