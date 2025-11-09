@@ -2,17 +2,20 @@
 
 <p style="color: green"><%= notice %></p>
 
-<h1>Locatários (Admin)</h1>
-
-<div id="locatarios">
-  <% @locatarios.each do |locatario| %>
-    <%= render "locatario", locatario: locatario %>
-    <p>
-      <%# CORREÇÃO DO SEU ERRO: [:admin, locatario] %>
-      <%= link_to "Show this locatario", [:admin, locatario] %>
-    </p>
-  <% end %>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="fw-bold text-primary">Locatários</h1>
+  <%= link_to "+ Novo Locatário", new_admin_locatario_path, class: "btn btn-success shadow-sm" %>
 </div>
 
-<%# CORREÇÃO TAMBÉM: new_admin_locatario_path %>
-<%= link_to "New locatario", new_admin_locatario_path, class: "btn btn-primary" %>
+<div class="row row-cols-1 row-cols-md-3 g-4" id="locatarios">
+  <% if @locatarios.any? %>
+    <% @locatarios.each do |locatario| %>
+      <%= render "locatario", locatario: locatario %>
+    <% end %>
+  <% else %>
+    <div class="text-center text-muted mt-5">
+      <h5>Nenhum locatário encontrado 😕</h5>
+      <p>Adicione um novo locatário para começar.</p>
+    </div>
+  <% end %>
+</div>

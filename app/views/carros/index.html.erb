@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <p class="lead text-muted mb-5">
+  <p class="lead text-muted mb-4">
     Confira os veículos disponíveis para locação.
     <%= link_to "Faça login", new_locatario_session_path, class: "link-primary text-decoration-none fw-semibold" %> 
     ou 
@@ -18,28 +18,75 @@
     para garantir o seu carro hoje mesmo!
   </p>
 
-  <!-- Grade de Carros -->
+  <!-- 🔍 Barra de Pesquisa e Filtros -->
+  <div class="card shadow-sm mb-5 border-0">
+    <div class="card-body">
+      <%= form_with url: carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+        
+        <!-- Busca geral -->
+        <div class="col-md-4">
+          <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
+          <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
+        </div>
+
+        <!-- Filtro por marca -->
+        <div class="col-md-3">
+          <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
+          <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
+        </div>
+
+        <!-- Filtro por câmbio -->
+        <div class="col-md-2">
+          <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
+          <%= select_tag :cambio, options_for_select(["manual", "automático"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
+        </div>
+
+        <!-- Filtro por combustível -->
+        <div class="col-md-2">
+          <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
+          <%= select_tag :combustivel, options_for_select(["gasolina", "álcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+        </div>
+
+        <!-- Botões -->
+        <div class="col-md-1 d-grid">
+          <%= submit_tag "Filtrar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-end">
+          <%= link_to "Limpar filtros", carros_path, class: "btn btn-link text-secondary text-decoration-none" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- 🚗 Grade de Carros -->
   <div class="row row-cols-1 row-cols-md-3 g-4">
-    <% @carros.each do |carro| %>
-      <div class="col">
-        <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-          <!-- Imagem opcional -->
-          <%= image_tag("car-placeholder.jpg", class: "card-img-top", alt: "Imagem do carro") if carro.respond_to?(:imagem) && carro.imagem.present? %>
+    <% if @carros.any? %>
+      <% @carros.each do |carro| %>
+        <div class="col">
+          <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+            <%= image_tag("car-placeholder.jpg", class: "card-img-top", alt: "Imagem do carro") if carro.respond_to?(:imagem) && carro.imagem.present? %>
 
-          <div class="card-body">
-            <h5 class="card-title text-dark fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
-            <p class="card-text mb-3">
-              <span class="d-block"><strong>Cor:</strong> <%= carro.cor %></span>
-              <span class="d-block"><strong>Ano:</strong> <%= carro.ano %></span>
-              <span class="d-block"><strong>Placa:</strong> <%= carro.placa %></span>
-            </p>
-            <h4 class="text-success fw-bold">R$ <%= carro.valor_diaria %>/dia</h4>
-          </div>
+            <div class="card-body">
+              <h5 class="card-title text-dark fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
+              <p class="card-text mb-3">
+                <span class="d-block"><strong>Cor:</strong> <%= carro.cor %></span>
+                <span class="d-block"><strong>Ano:</strong> <%= carro.ano %></span>
+                <span class="d-block"><strong>Placa:</strong> <%= carro.placa %></span>
+              </p>
+              <h4 class="text-success fw-bold">R$ <%= carro.valor_diaria %>/dia</h4>
+            </div>
 
-          <div class="card-footer bg-transparent border-0 pb-4">
-            <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
+            <div class="card-footer bg-transparent border-0 pb-4">
+              <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
+            </div>
           </div>
         </div>
+      <% end %>
+    <% else %>
+      <div class="text-center text-muted mt-5">
+        <h5>Nenhum carro encontrado 😕</h5>
+        <p>Tente ajustar os filtros ou refazer a busca.</p>
       </div>
     <% end %>
   </div>
@@ -50,7 +97,7 @@
   </div>
 </div>
 
-<!-- Estilo adicional leve -->
+<!-- Efeito hover -->
 <style>
   .hover-shadow:hover {
     transform: translateY(-5px);

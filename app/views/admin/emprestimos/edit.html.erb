@@ -1,12 +1,11 @@
-<% content_for :title, "Editing emprestimo" %>
+<% content_for :title, "Editar Empréstimo" %>
 
-<h1>Editing emprestimo</h1>
+<h1 class="fw-bold text-primary mb-4">Editar Empréstimo</h1>
 
 <%= render "form", emprestimo: @emprestimo %>
 
 <br>
 
 <div>
-  <%= link_to "Show this emprestimo", @emprestimo %> |
-  <%= link_to "Back to emprestimos", emprestimos_path %>
+  <%= link_to "← Voltar para empréstimos", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
 </div>

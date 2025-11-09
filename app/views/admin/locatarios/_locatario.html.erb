@@ -1,12 +1,14 @@
-<div id="<%= dom_id locatario %>">
-  <p>
-    <strong>Nome:</strong>
-    <%= locatario.nome %>
-  </p>
-
-  <p>
-    <strong>Cpf:</strong>
-    <%= locatario.cpf %>
-  </p>
-
+<div class="col" id="<%= dom_id(locatario) %>">
+  <div class="card h-100 border-0 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title fw-bold"><%= locatario.nome %></h5>
+      <p class="mb-1"><strong>CPF:</strong> <%= locatario.cpf %></p>
+    </div>
+    <div class="card-footer bg-transparent border-top d-flex justify-content-center gap-2">
+      <%= link_to "Editar", edit_admin_locatario_path(locatario), class: "btn btn-warning btn-sm text-white" %>
+      <%= link_to "Excluir", admin_locatario_path(locatario),
+                  data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
+                  class: "btn btn-danger btn-sm" %>
+    </div>
+  </div>
 </div>
