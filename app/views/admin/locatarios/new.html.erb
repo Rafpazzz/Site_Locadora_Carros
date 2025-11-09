@@ -1,11 +1,13 @@
-<% content_for :title, "New locatario" %>
+<%# app/views/admin/locatarios/new.html.erb %>
 
-<h1>New locatario</h1>
+<h1>Novo Locatário</h1>
 
-<%= render "form", locatario: @locatario %>
+<%# Renderiza o formulário parcial que já corrigimos %>
+<%= render 'form', locatario: @locatario %>
 
 <br>
 
 <div>
-  <%= link_to "Back to locatarios", locatarios_path %>
+  <%# Usamos 'admin_locatarios_path' em vez de 'locatarios_path' %>
+  <%= link_to "Voltar aos locatários", admin_locatarios_path, class: "btn btn-secondary" %>
 </div>

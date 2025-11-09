@@ -1,12 +1,12 @@
 class Carro < ApplicationRecord
+  # === Associações ===
   has_many :emprestimos
   has_many :locatarios, through: :emprestimos
 
-  # Validações de presença
+  # === Validações ===
   validates :nome, :marca, :placa, :valor_diaria, :ano, presence: true
   validates :placa, uniqueness: true
 
-  # Validações de inclusão
   validates :combustivel, inclusion: { 
     in: %w[gasolina alcool flex diesel], 
     message: "inválido. Use: gasolina, alcool, flex ou diesel." 
@@ -17,10 +17,9 @@ class Carro < ApplicationRecord
     message: "inválido. Use: manual ou automatico." 
   }
 
-  # --- Atributos Virtuais para o formulário de 'ano' ---
+  # === Métodos de Instância e Atributos Virtuais ===
 
-  # Converte o ano do select (ex: "2024") para a data (2024-01-01)
-  # antes de salvar no banco de dados.
+  # Atributo virtual 'setter' para o formulário de ano
   def ano_para_select=(year)
     if year.present? && year.to_i > 0
       self.ano = Date.new(year.to_i, 1, 1)
@@ -29,13 +28,20 @@ class Carro < ApplicationRecord
     end
   end
 
-  # Retorna o ano (ex: 2024) para o <select> do formulário
-  # ler e pré-selecionar o valor correto na edição.
+  # Atributo virtual 'getter' para o formulário de ano
   def ano_para_select
     self.ano.year if self.ano.present?
   end
 
-  # --- Métodos de Classe ---
+  # --- CORREÇÃO (PASSO 3) ---
+  # Retorna uma string formatada ("Nome (Placa)") para ser usada
+  # no collection_select do formulário de admin.
+  def nome_e_placa
+    "#{nome} (#{placa})"
+  end
+  # --- FIM DA CORREÇÃO ---
+
+  # === Métodos de Classe ===
 
   def self.to_csv
     require 'csv'

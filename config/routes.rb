@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :emprestimos, only: [:new, :create, :index, :show] 
   root "carros#index"
   namespace :admin do
-    resources :locatarios
+    resources :locatarios, except: [:new, :create]
     resources :carros
     resources :emprestimos
   end
