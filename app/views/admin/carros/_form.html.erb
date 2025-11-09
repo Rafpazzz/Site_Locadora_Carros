@@ -39,9 +39,7 @@
         
         <div class="col-md-4">
           <%= form.label :ano, class: "form-label fw-semibold" %>
-          <%= form.date_select :ano, 
-                { order: [:year, :month, :day], start_year: Date.today.year - 50, end_year: Date.today.year + 1 },
-                { class: "form-select shadow-sm" } %>
+          <%= form.select :ano, options_for_select((Date.today.year - 50..Date.today.year + 1).to_a.reverse, carro.ano), { prompt: 'Selecione o ano' }, { class: "form-select shadow-sm", required: true } %>
         </div>
 
         <div class="col-md-4">

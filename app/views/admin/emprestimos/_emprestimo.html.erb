@@ -1,7 +1,33 @@
-<div id="<%= dom_id emprestimo %>">
-  <p>
-    <strong>Status:</strong>
-    <%= emprestimo.status %>
-  </p>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <% @emprestimos.each do |emprestimo| %>
+    <div class="col" id="<%= dom_id(emprestimo) %>">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">Empréstimo #<%= emprestimo.id %></h5>
+          <p class="mb-1"><strong>Status:</strong> <span class="text-primary fw-semibold"><%= emprestimo.status %></span></p>
 
+          <%# Se existir outros campos relevantes, pode exibi-los aqui %>
+          <% if emprestimo.data_inicio.present? %>
+            <p class="mb-1"><strong>Início:</strong> <%= emprestimo.data_inicio.strftime("%d/%m/%Y") %></p>
+          <% end %>
+          <% if emprestimo.data_fim.present? %>
+            <p class="mb-1"><strong>Fim:</strong> <%= emprestimo.data_fim.strftime("%d/%m/%Y") %></p>
+          <% end %>
+        </div>
+        <div class="card-footer bg-transparent border-top d-flex justify-content-center gap-2">
+          <%= link_to "Editar", edit_admin_emprestimo_path(emprestimo), class: "btn btn-warning btn-sm text-white" %>
+          <%= link_to "Excluir", admin_emprestimo_path(emprestimo),
+                      data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
+                      class: "btn btn-danger btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @emprestimos.empty? %>
+    <div class="text-center text-muted mt-5">
+      <h5>Nenhum empréstimo encontrado 😕</h5>
+      <p>Adicione um novo empréstimo ou ajuste os filtros.</p>
+    </div>
+  <% end %>
 </div>

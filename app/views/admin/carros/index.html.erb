@@ -3,27 +3,70 @@
   <%= link_to "+ Novo Carro", new_admin_carro_path, class: "btn btn-success shadow-sm" %>
 </div>
 
+<!-- 🔍 Barra de Pesquisa e Filtros Avançados -->
+<div class="card shadow-sm mb-4 border-0">
+  <div class="card-body">
+    <%= form_with url: admin_carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+      
+      <!-- Busca geral -->
+      <div class="col-md-4">
+        <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
+        <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
+      </div>
+
+      <!-- Filtro por marca -->
+      <div class="col-md-3">
+        <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
+        <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
+      </div>
+
+      <!-- Filtro por câmbio -->
+      <div class="col-md-2">
+        <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
+        <%= select_tag :cambio, options_for_select(["manual", "automático"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
+      </div>
+
+      <!-- Filtro por combustível -->
+      <div class="col-md-2">
+        <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
+        <%= select_tag :combustivel, options_for_select(["gasolina", "álcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+      </div>
+
+      <div class="col-md-1 d-grid">
+        <%= submit_tag "Filtrar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- 🚗 Lista de Carros -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
-  <% @carros.each do |carro| %>
-    <div class="col">
-      <div class="card h-100 border-0 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
-          <p class="card-text text-muted">
-            <strong>Cor:</strong> <%= carro.cor %><br>
-            <strong>Ano:</strong> <%= carro.ano %><br>
-            <strong>Placa:</strong> <%= carro.placa %><br>
-          </p>
-          <p class="fw-bold text-success">R$ <%= carro.valor_diaria %>/dia</p>
-        </div>
-        <div class="card-footer bg-transparent border-top d-flex justify-content-between">
-          <%= link_to "Ver", [:admin, carro], class: "btn btn-primary btn-sm" %>
-          <%= link_to "Editar", edit_admin_carro_path(carro), class: "btn btn-warning btn-sm text-white" %>
-          <%= link_to "Excluir", admin_carro_path(carro),
-                      data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
-                      class: "btn btn-danger btn-sm" %>
+  <% if @carros.any? %>
+    <% @carros.each do |carro| %>
+      <div class="col">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
+            <p class="card-text text-muted">
+              <strong>Cor:</strong> <%= carro.cor %><br>
+              <strong>Ano:</strong> <%= carro.ano %><br>
+              <strong>Placa:</strong> <%= carro.placa %><br>
+            </p>
+            <p class="fw-bold text-success">R$ <%= carro.valor_diaria %>/dia</p>
+          </div>
+          <div class="card-footer bg-transparent border-top d-flex justify-content-center gap-2">
+            <%= link_to "Editar", edit_admin_carro_path(carro), class: "btn btn-warning btn-sm text-white" %>
+            <%= link_to "Excluir", admin_carro_path(carro),
+                        data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
+                        class: "btn btn-danger btn-sm" %>
+          </div>
         </div>
       </div>
+    <% end %>
+  <% else %>
+    <div class="text-center text-muted mt-5">
+      <h5>Nenhum carro encontrado 😕</h5>
+      <p>Tente ajustar os filtros ou adicionar um novo carro.</p>
     </div>
   <% end %>
 </div>
