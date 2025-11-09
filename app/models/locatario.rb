@@ -5,7 +5,7 @@ class Locatario < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :alugueis
-  has_many :emprestimos
+  has_many :emprestimos, dependent: :restrict_with_error
   has_many :carros, through: :alugueis
 
   validates :nome, presence: true

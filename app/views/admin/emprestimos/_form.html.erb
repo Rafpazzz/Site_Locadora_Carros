@@ -2,8 +2,12 @@
 
 <%= form_with(model: [:admin, emprestimo]) do |form| %>
   <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white fw-bold">
+      <%# Título dinâmico %>
+      <%= emprestimo.new_record? ? "Novo Empréstimo" : "Editar Empréstimo" %>
+    </div>
+
     <div class="card-body bg-light">
-      
       <% if emprestimo.errors.any? %>
         <div class="alert alert-danger">
           <h5><%= pluralize(emprestimo.errors.count, "erro") %> impediram o salvamento:</h5>
@@ -15,20 +19,50 @@
         </div>
       <% end %>
 
-      <div class="mb-3">
-  <%= form.label :status, class: "form-label fw-semibold" %>
+      <div class="row g-3">
+        <%# --- CAMPOS PARA NOVO EMPRÉSTIMO --- %>
+        <% if emprestimo.new_record? %>
+          
+          <div class="col-md-6">
+            <%= form.label :locatario_id, "Locatário (por Email)", class: "form-label fw-semibold" %>
+            <%= form.collection_select :locatario_id, @locatarios, :id, :email, { prompt: "Selecione o locatário" }, { class: "form-select" } %>
+          </div>
+          
+          <div class="col-md-6">
+            <%= form.label :carro_id, "Carro (por Placa)", class: "form-label fw-semibold" %>
+            <%= form.collection_select :carro_id, @carros, :id, :nome_e_placa, { prompt: "Selecione o carro" }, { class: "form-select" } %>
+          </div>
+          
+          <div class="col-md-6">
+            <%= form.label :data_inicio, class: "form-label fw-semibold" %>
+            <%= form.date_field :data_inicio, class: "form-control" %>
+          </div>
+          
+          <div class="col-md-6">
+            <%= form.label :data_fim, "Data Final", class: "form-label fw-semibold" %>
+            <%= form.date_field :data_fim, class: "form-control" %>
+          </div>
 
-  <%= form.select :status, 
-        options_for_select(['Pendente', 'Locado', 'Devolvido'], emprestimo.status), 
-        { prompt: 'Selecione um status' }, 
-        { class: "form-select" } %>
-</div>
+        <%# --- CAMPO PARA EDITAR EMPRÉSTIMO --- %>
+        <% else %>
+          <div class="col-12">
+            <%= form.label :status, class: "form-label fw-semibold" %>
+            <%= form.select :status, 
+                  options_for_select(['Pendente', 'Locado', 'Devolvido'], emprestimo.status), 
+                  { prompt: 'Selecione um status' }, 
+                  { class: "form-select" } %>
+          </div>
+        <% end %>
+      </div>
     </div>
 
+    <%# --- SEU ERRO ESTAVA AQUI --- %>
+    <%# O código abaixo (o 'footer' e o 'end') estava em falta %>
     <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-      <%= link_to "← Voltar para empréstimos", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
-
-      <%= form.submit "Atualizar Empréstimo", class: "btn btn-primary" %>
+      <%= link_to "← Voltar", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
+      
+      <%# Botão dinâmico %>
+      <%= form.submit (emprestimo.new_record? ? "Criar Empréstimo" : "Atualizar Empréstimo"), class: "btn btn-primary" %>
     </div>
   </div>
-<% end %>
+<% end %> <%# Esta linha 'end' estava em falta %>
