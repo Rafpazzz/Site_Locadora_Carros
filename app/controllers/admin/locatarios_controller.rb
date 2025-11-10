@@ -6,7 +6,7 @@ class Admin::LocatariosController < Admin::BaseController
     @locatarios = Locatario.order(:nome)
 
     if params[:query].present?
-      termo = "%#{params[:query]}%"
+      termo = "%#{params[:query].strip}%"
       @locatarios = @locatarios.where("email LIKE ? OR cpf LIKE ?", termo, termo)
     end
 

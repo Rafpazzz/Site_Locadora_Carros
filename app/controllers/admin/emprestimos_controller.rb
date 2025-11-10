@@ -6,7 +6,7 @@ class Admin::EmprestimosController < Admin::BaseController
 
     # 2. Lógica da Busca (por Placa ou CPF)
     if params[:query].present?
-      termo = "%#{params[:query]}%"
+      termo = "%#{params[:query].strip}%"
       # Adiciona 'references' para permitir o 'where' nas tabelas associadas
       @emprestimos = @emprestimos.references(:carro, :locatario).where(
         "carros.placa LIKE ? OR locatarios.cpf LIKE ? OR locatarios.email LIKE ?", 
