@@ -37,15 +37,14 @@ class Carro < ApplicationRecord
   end
 
   # === Métodos de Classe ===
+  require 'csv'
 
-  def self.to_csv
-    require 'csv'
-    
-    attributes = %w[id marca nome valor_diaria]
+  def self.to_csv(carros)
+    attributes = %w[id marca nome placa cor ano valor_diaria cambio combustivel]
 
     CSV.generate(headers: true) do |csv|
       csv << attributes
-      all.each do |carro|
+      carros.each do |carro|
         csv << attributes.map { |attr| carro.send(attr) }
       end
     end
