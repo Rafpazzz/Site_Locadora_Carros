@@ -21,8 +21,6 @@ class Emprestimo < ApplicationRecord
   
   private
 
-  # --- Métodos de Validação ---
-
   def data_inicio_nao_pode_ser_no_passado
     if data_inicio.present? && data_inicio < Date.today
       errors.add(:data_inicio, "não pode ser no passado")
@@ -41,7 +39,7 @@ class Emprestimo < ApplicationRecord
     return unless data_fim.present? && data_inicio.present? && carro.present?
       
     dias = (data_fim.to_date - data_inicio.to_date).to_i
-    dias = 1 if dias <= 0 # Mínimo de 1 dia
+    dias = 1 if dias <= 0
     
     self.valor_total = dias * carro.valor_diaria
   end
@@ -67,4 +65,4 @@ class Emprestimo < ApplicationRecord
     carro.update(isDisponivel: true) if carro.present?
   end
   
-end # <-- Este 'end' estava em falta no seu arquivo
+end

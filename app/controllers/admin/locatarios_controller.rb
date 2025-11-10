@@ -3,18 +3,13 @@ class Admin::LocatariosController < Admin::BaseController
 
   # GET /admin/locatarios
   def index
-    # Começa com a base da consulta
     @locatarios = Locatario.order(:nome)
 
-    # --- ESTA É A ADIÇÃO (BUSCA) ---
     if params[:query].present?
       termo = "%#{params[:query]}%"
-      # Busca por email (LIKE) ou CPF (LIKE)
       @locatarios = @locatarios.where("email LIKE ? OR cpf LIKE ?", termo, termo)
     end
-    # --- FIM DA ADIÇÃO ---
 
-    # Aplica a paginação (9 por página) NO FINAL
     @locatarios = @locatarios.page(params[:page]).per(9)
   end
 
@@ -80,6 +75,6 @@ class Admin::LocatariosController < Admin::BaseController
     end
 
     def locatario_params
-      params.require(:locatario).permit(:nome, :email, :admin, :cpf) # Adicionei :cpf aqui
+      params.require(:locatario).permit(:nome, :email, :admin, :cpf)
     end
 end
