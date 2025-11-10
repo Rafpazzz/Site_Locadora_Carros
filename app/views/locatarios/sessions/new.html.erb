@@ -1,5 +1,3 @@
-<%# app/views/locatarios/sessions/new.html.erb %>
-
 <div class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-5 col-md-7">
@@ -36,7 +34,6 @@
 
           <hr class="my-4">
 
-          <%# Links para "Cadastrar-se" e "Esqueci a senha" %>
           <div class="text-center">
             <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
               <%= link_to "Ainda não tem conta? Cadastre-se", new_registration_path(resource_name), class: "btn btn-outline-success" %><br />

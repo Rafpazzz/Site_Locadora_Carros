@@ -6,7 +6,6 @@
           <h5 class="card-title fw-bold">Empréstimo #<%= emprestimo.id %></h5>
           <p class="mb-1"><strong>Status:</strong> <span class="text-primary fw-semibold"><%= emprestimo.status %></span></p>
 
-          <%# Se existir outros campos relevantes, pode exibi-los aqui %>
           <% if emprestimo.data_inicio.present? %>
             <p class="mb-1"><strong>Início:</strong> <%= emprestimo.data_inicio.strftime("%d/%m/%Y") %></p>
           <% end %>

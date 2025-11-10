@@ -1,19 +1,11 @@
-<%# app/views/admin/locatarios/edit.html.erb %>
-
 <h1>Editar Locatário</h1>
 
-<%# --- CORREÇÃO AQUI --- %>
-<%# Mudamos 'locatário' (com acento) para 'locatario' (sem acento) %>
-<%# para que corresponda ao esperado pelo _form.html.erb %>
 <%= render 'form', locatario: @locatario %>
-<%# --- FIM DA CORREÇÃO --- %>
 
 <br>
 
 <div>
-  <%# Usamos [:admin, @locatario] (que vira 'admin_locatario_path') %>
   <%= link_to "Ver este locatário", [:admin, @locatario], class: "btn btn-info" %> |
   
-  <%# Usamos 'admin_locatarios_path' %>
   <%= link_to "Voltar aos locatários", admin_locatarios_path, class: "btn btn-secondary" %>
 </div>

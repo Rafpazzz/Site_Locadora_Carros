@@ -1,9 +1,6 @@
-<%# app/views/admin/emprestimos/_form.html.erb %>
-
 <%= form_with(model: [:admin, emprestimo]) do |form| %>
   <div class="card shadow-sm border-0">
     <div class="card-header bg-primary text-white fw-bold">
-      <%# Título dinâmico %>
       <%= emprestimo.new_record? ? "Novo Empréstimo" : "Editar Empréstimo" %>
     </div>
 
@@ -20,7 +17,6 @@
       <% end %>
 
       <div class="row g-3">
-        <%# --- CAMPOS PARA NOVO EMPRÉSTIMO --- %>
         <% if emprestimo.new_record? %>
           
           <div class="col-md-6">
@@ -43,7 +39,6 @@
             <%= form.date_field :data_fim, class: "form-control" %>
           </div>
 
-        <%# --- CAMPO PARA EDITAR EMPRÉSTIMO --- %>
         <% else %>
           <div class="col-12">
             <%= form.label :status, class: "form-label fw-semibold" %>
@@ -56,13 +51,10 @@
       </div>
     </div>
 
-    <%# --- SEU ERRO ESTAVA AQUI --- %>
-    <%# O código abaixo (o 'footer' e o 'end') estava em falta %>
     <div class="card-footer bg-white d-flex justify-content-between align-items-center">
       <%= link_to "← Voltar", admin_emprestimos_path, class: "btn btn-outline-secondary" %>
       
-      <%# Botão dinâmico %>
       <%= form.submit (emprestimo.new_record? ? "Criar Empréstimo" : "Atualizar Empréstimo"), class: "btn btn-primary" %>
     </div>
   </div>
-<% end %> <%# Esta linha 'end' estava em falta %>
+<% end %> 

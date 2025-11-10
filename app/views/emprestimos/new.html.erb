@@ -1,14 +1,6 @@
-<%# app/views/emprestimos/new.html.erb %>
-
 <div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-lg-7">
-
-      <%# --- ESTA É A CORREÇÃO --- %>
-      <%# O 'form_with' agora usa 'model: [@carro, @emprestimo]' %>
-      <%# Isto diz ao Rails para usar a rota aninhada: %>
-      <%# POST /carros/:carro_id/emprestimos %>
-      
+    <div class="col-lg-7">  
       <%= form_with(model: [@carro, @emprestimo], local: true) do |form| %>
         <div class="card shadow-sm border-0">
           
@@ -18,7 +10,6 @@
           
           <div class="card-body bg-light p-4">
             
-            <%# Mostra erros de validação (se houver) %>
             <% if @emprestimo.errors.any? %>
               <div class="alert alert-danger">
                 <h5><%= pluralize(@emprestimo.errors.count, "erro") %> impediram o salvamento:</h5>
@@ -30,7 +21,6 @@
               </div>
             <% end %>
 
-            <%# Card de Detalhes do Carro (ReadOnly) %>
             <div class="card mb-4">
               <div class="card-body">
                 <h5 class="card-title text-dark fw-bold"><%= @carro.marca %> <%= @carro.nome %></h5>
@@ -42,7 +32,6 @@
               </div>
             </div>
 
-            <%# Campos de Data %>
             <div class="row g-3">
               <div class="col-md-6">
                 <%= form.label :data_inicio, class: "form-label fw-semibold" %>

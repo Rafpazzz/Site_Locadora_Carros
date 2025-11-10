@@ -1,13 +1,9 @@
-<%# app/views/admin/locatarios/new.html.erb %>
-
 <h1>Novo Locatário</h1>
 
-<%# Renderiza o formulário parcial que já corrigimos %>
 <%= render 'form', locatario: @locatario %>
 
 <br>
 
 <div>
-  <%# Usamos 'admin_locatarios_path' em vez de 'locatarios_path' %>
   <%= link_to "Voltar aos locatários", admin_locatarios_path, class: "btn btn-secondary" %>
 </div>
