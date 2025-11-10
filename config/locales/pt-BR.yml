@@ -1,4 +1,5 @@
 pt-BR:
+  # --- Suas regras de Formatação (Mantidas) ---
   time:
     formats:
       short: "%d/%m/%Y %H:%M"
@@ -16,26 +17,43 @@ pt-BR:
         delimiter: "."
         format: "%u %n"
 
+  # --- TRADUÇÕES DE MODELOS E ERROS (A CORREÇÃO) ---
   activerecord:
     
     # 1. Traduz os NOMES dos atributos (ex: "Password confirmation" -> "Confirmação de senha")
     attributes:
       locatario:
         nome: "Nome"
-        email: "Email"
+        email: "Email" # <--- ADICIONADO
         cpf: "CPF"
         password: "Senha"
         password_confirmation: "Confirmação de senha"
+      
+      carro: # <--- ADICIONADO
+        placa: "Placa"
+        nome: "Nome"
+        marca: "Marca"
 
     # 2. Traduz as MENSAGENS de erro
     errors:
       models:
         locatario: # O nome do seu modelo
           attributes:
-            cpf: # Erros do CPF (da sua outra pergunta)
+            cpf:
               taken: 'já está cadastrado no sistema.'
               blank: 'não pode ficar em branco.'
               invalid: 'deve conter 11 dígitos (apenas números).'
-
+            
             password_confirmation:
               confirmation: 'não confere com a Senha.'
+            
+            email:
+              taken: 'já está em uso. Tente outro email.'
+              blank: 'não pode ficar em branco.'
+              invalid: 'possui formato inválido.'
+        
+        carro:
+          attributes:
+            placa:
+              taken: 'já está cadastrada. Verifique o veículo.'
+              blank: 'não pode ficar em branco.'

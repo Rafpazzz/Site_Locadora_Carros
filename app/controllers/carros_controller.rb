@@ -4,7 +4,6 @@ class CarrosController < ApplicationController
 
     if params[:query].present?
       termo = "%#{params[:query]}%"
-      # Trocamos ILIKE por LIKE
       @carros = @carros.where("nome LIKE ? OR marca LIKE ? OR placa LIKE ?", termo, termo, termo)
     end
    
