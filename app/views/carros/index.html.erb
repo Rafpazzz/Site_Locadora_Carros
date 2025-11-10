@@ -64,9 +64,6 @@
             </div>
             <div class="card-footer bg-transparent border-0 pb-4">
               <% if locatario_signed_in? %>
-                <%# --- ESTA É A CORREÇÃO DO LINK --- %>
-                <%# Mudamos de 'new_emprestimo_path(carro_id: carro.id)' %>
-                <%# para 'new_carro_emprestimo_path(carro)' %>
                 <%= link_to "Alugar este Carro", new_carro_emprestimo_path(carro), class: "btn btn-primary w-100 shadow-sm" %>
               <% else %>
                 <%= link_to "Faça login para alugar", new_locatario_session_path, class: "btn btn-primary w-100 shadow-sm" %>

@@ -36,9 +36,7 @@
           <%= form.label :cor, class: "form-label fw-semibold" %>
           <%= form.text_field :cor, class: "form-control shadow-sm" %>
         </div>
-        
-        <%# --- ESTA É A CORREÇÃO --- %>
-        <%# Trocamos :ano por :ano_para_select para usar o dropdown %>
+       
         <div class="col-md-4">
           <%= form.label :ano_para_select, "Ano", class: "form-label fw-semibold" %>
           <%= form.select :ano_para_select, 
@@ -46,8 +44,7 @@
                 { prompt: 'Selecione o ano' }, 
                 { class: "form-select shadow-sm", required: true } %>
         </div>
-        <%# --- FIM DA CORREÇÃO --- %>
-
+      
         <div class="col-md-4">
           <%= form.label :combustivel, class: "form-label fw-semibold" %>
           <%= form.select :combustivel,
