@@ -1,51 +1,65 @@
 <%# app/views/emprestimos/new.html.erb %>
-<div class="container mt-4">
+
+<div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-md-8">
-      
-      <h2>Confirmar Locação</h2>
-      <p>Você está logado como: <strong><%= current_locatario.email %></strong></p>
-      
-      <%# Card do Carro Escolhido %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <h5 class="card-title"><%= @carro.marca %> <%= @carro.marca %></h5>
-          <p class="card-text">Placa: <%= @carro.placa %> | Ano: <%= @carro.ano %></p>
-          <h4 class="card-text text-success">R$ <%= @carro.valor_diaria %>/dia</h4>
-        </div>
-      </div>
+    <div class="col-lg-7">
 
-      <%# Formulário de Empréstimo %>
-      <%= form_with(model: @emprestimo) do |form| %>
-        
-        <%# Mostra erros de validação (ex: "Data de fim não pode ser antes de hoje") %>
-        <% if @emprestimo.errors.any? %>
-          <div class="alert alert-danger">
-            <h5><%= @emprestimo.errors.count %> erros impediram a locação:</h5>
-            <ul>
-              <% @emprestimo.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
+      <%# --- ESTA É A CORREÇÃO --- %>
+      <%# O 'form_with' agora usa 'model: [@carro, @emprestimo]' %>
+      <%# Isto diz ao Rails para usar a rota aninhada: %>
+      <%# POST /carros/:carro_id/emprestimos %>
+      
+      <%= form_with(model: [@carro, @emprestimo], local: true) do |form| %>
+        <div class="card shadow-sm border-0">
+          
+          <div class="card-header bg-primary text-white fw-bold">
+            <h2>Solicitar Locação</h2>
           </div>
-        <% end %>
+          
+          <div class="card-body bg-light p-4">
+            
+            <%# Mostra erros de validação (se houver) %>
+            <% if @emprestimo.errors.any? %>
+              <div class="alert alert-danger">
+                <h5><%= pluralize(@emprestimo.errors.count, "erro") %> impediram o salvamento:</h5>
+                <ul class="mb-0">
+                  <% @emprestimo.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-        <%# Passa o ID do carro escondido %>
-        <%= form.hidden_field :carro_id, value: @carro.id %>
+            <%# Card de Detalhes do Carro (ReadOnly) %>
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title text-dark fw-bold"><%= @carro.marca %> <%= @carro.nome %></h5>
+                <p class="card-text mb-1">
+                  <span class="d-block"><strong>Placa:</strong> <%= @carro.placa %></span>
+                  <span class="d-block"><strong>Ano:</strong> <%= @carro.ano.year %></span>
+                </p>
+                <h4 class="text-success fw-bold mb-0"><%= number_to_currency(@carro.valor_diaria) %>/dia</h4>
+              </div>
+            </div>
 
-        <div class="mb-3">
-          <%= form.label :data_inicio, class: "form-label" %>
-          <%= form.date_field :data_inicio, class: "form-control" %>
-        </div>
+            <%# Campos de Data %>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= form.label :data_inicio, class: "form-label fw-semibold" %>
+                <%= form.date_field :data_inicio, class: "form-control shadow-sm", required: true %>
+              </div>
+              <div class="col-md-6">
+                <%= form.label :data_fim, "Data Final", class: "form-label fw-semibold" %>
+                <%= form.date_field :data_fim, class: "form-control shadow-sm", required: true %>
+              </div>
+            </div>
+            
+          </div>
 
-        <div class="mb-3">
-          <%= form.label :data_fim, class: "form-label" %>
-          <%= form.date_field :data_fim, class: "form-control" %>
-        </div>
-        
-        <div class="actions">
-          <%= form.submit "Confirmar Aluguel", class: "btn btn-primary" %>
-          <%= link_to "Cancelar", carros_path, class: "btn btn-secondary" %>
+          <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+            <%= link_to "← Cancelar", carros_path, class: "btn btn-outline-secondary" %>
+            <%= form.submit "Confirmar Solicitação", class: "btn btn-primary px-4 shadow-sm" %>
+          </div>
         </div>
       <% end %>
       

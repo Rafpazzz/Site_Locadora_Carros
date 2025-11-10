@@ -1,42 +1,63 @@
 <%# app/views/locatarios/registrations/new.html.erb %>
 
-<h2>Sign up</h2>
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white fw-bold">
+          <h2>Cadastre-se</h2>
+        </div>
+        <div class="card-body p-4">
+          
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            
+            <%# Mostra erros de validação (se houver) %>
+            <%= render "devise/shared/error_messages", resource: resource %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+            <div class="mb-3">
+              <%= f.label :nome, class: "form-label fw-semibold" %>
+              <%= f.text_field :nome, autofocus: true, class: "form-control shadow-sm", required: true %>
+            </div>
 
-  <%# --- ADICIONE ESTES CAMPOS --- %>
-  <div class="mb-3">
-    <%= f.label :nome, class: "form-label" %>
-    <%= f.text_field :nome, autofocus: true, class: "form-control" %>
+            <div class="mb-3">
+              <%= f.label :cpf, class: "form-label fw-semibold" %>
+              <%= f.text_field :cpf, class: "form-control shadow-sm", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :email, class: "form-label fw-semibold" %>
+              <%= f.email_field :email, autocomplete: "email", class: "form-control shadow-sm", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :password, "Senha", class: "form-label fw-semibold" %>
+              <% if @minimum_password_length %>
+                <small class="form-text text-muted">(<%= @minimum_password_length %> caracteres no mínimo)</small>
+              <% end %>
+              <%= f.password_field :password, autocomplete: "new-password", class: "form-control shadow-sm", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :password_confirmation, "Confirme a Senha", class: "form-label fw-semibold" %>
+              <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control shadow-sm", required: true %>
+            </div>
+
+            <div class="d-grid mb-3">
+              <%= f.submit "Criar Conta", class: "btn btn-primary btn-lg shadow-sm" %>
+            </div>
+          <% end %>
+
+          <hr class="my-4">
+
+          <%# Link para "Log in" %>
+          <div class="text-center">
+            <%= render "devise/shared/links" %>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
-
-  <div class="mb-3">
-    <%= f.label :cpf, class: "form-label" %>
-    <%= f.text_field :cpf, class: "form-control" %>
-  </div>
-
-  <div class="mb-3">
-    <%= f.label :email, class: "form-label" %>
-    <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
-  </div>
-
-  <div class="mb-3">
-    <%= f.label :password, class: "form-label" %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password", class: "form-control" %>
-  </div>
-
-  <div class="mb-3">
-    <%= f.label :password_confirmation, class: "form-label" %>
-    <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up", class: "btn btn-primary" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

@@ -3,33 +3,35 @@
   <%= link_to "+ Novo Carro", new_admin_carro_path, class: "btn btn-success shadow-sm" %>
 </div>
 
-<!-- 🔍 Barra de Pesquisa e Filtros Avançados -->
 <div class="card shadow-sm mb-4 border-0">
   <div class="card-body">
     <%= form_with url: admin_carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
       
-      <!-- Busca geral -->
-      <div class="col-md-4">
+      <div class="col-md-3">
         <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
         <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
       </div>
 
-      <!-- Filtro por marca -->
-      <div class="col-md-3">
+      <div class="col-md-2">
         <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
         <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
       </div>
 
-      <!-- Filtro por câmbio -->
       <div class="col-md-2">
         <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
-        <%= select_tag :cambio, options_for_select(["manual", "automático"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
+        <%= select_tag :cambio, options_for_select(["manual", "automatico"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
       </div>
 
-      <!-- Filtro por combustível -->
       <div class="col-md-2">
         <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
-        <%= select_tag :combustivel, options_for_select(["gasolina", "álcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+        <%= select_tag :combustivel, options_for_select(["gasolina", "alcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :isDisponivel, "Disponibilidade", class: "form-label fw-semibold" %>
+        <%= select_tag :isDisponivel, 
+              options_for_select([ ["Disponíveis", "true"], ["Locados", "false"] ], params[:isDisponivel]), 
+              include_blank: "Todos", class: "form-select shadow-sm" %>
       </div>
 
       <div class="col-md-1 d-grid">
@@ -39,7 +41,6 @@
   </div>
 </div>
 
-<!-- 🚗 Lista de Carros -->
 <div class="row row-cols-1 row-cols-md-3 g-4">
   <% if @carros.any? %>
     <% @carros.each do |carro| %>
@@ -49,10 +50,10 @@
             <h5 class="card-title fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
             <p class="card-text text-muted">
               <strong>Cor:</strong> <%= carro.cor %><br>
-              <strong>Ano:</strong> <%= carro.ano %><br>
+              <strong>Ano:</strong> <%= carro.ano.year %><br>
               <strong>Placa:</strong> <%= carro.placa %><br>
             </p>
-            <p class="fw-bold text-success">R$ <%= carro.valor_diaria %>/dia</p>
+            <p class="fw-bold text-success"><%= number_to_currency(carro.valor_diaria) %>/dia</p>
           </div>
           <div class="card-footer bg-transparent border-top d-flex justify-content-center gap-2">
             <%= link_to "Editar", edit_admin_carro_path(carro), class: "btn btn-warning btn-sm text-white" %>
@@ -69,4 +70,8 @@
       <p>Tente ajustar os filtros ou adicionar um novo carro.</p>
     </div>
   <% end %>
+</div>
+
+<div class="d-flex justify-content-center mt-5">
+  <%= paginate @carros %>
 </div>

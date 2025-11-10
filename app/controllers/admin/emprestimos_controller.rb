@@ -2,26 +2,34 @@ class Admin::EmprestimosController < Admin::BaseController
   before_action :set_emprestimo, only: %i[ show edit update destroy ]
 
   def index
-    @emprestimos = Emprestimo.all
+    # 1. Carrega os empréstimos e "inclui" os dados do carro e locatário
+    #    para evitar N+1 queries (melhor performance)
+    @emprestimos = Emprestimo.includes(:carro, :locatario)
+
+    # 2. Lógica da Busca (por Placa ou CPF)
+    if params[:query].present?
+      termo = "%#{params[:query]}%"
+      # Adiciona 'references' para permitir o 'where' nas tabelas associadas
+      @emprestimos = @emprestimos.references(:carro, :locatario).where(
+        "carros.placa LIKE ? OR locatarios.cpf LIKE ?", 
+        termo, termo
+      )
+    end
+
+    # 3. Ordena (mais novos primeiro) e aplica paginação (10 por página)
+    @emprestimos = @emprestimos.order(created_at: :desc).page(params[:page]).per(10)
   end
 
   def show
   end
 
-  # Carrega os dados necessários para o formulário de NOVO empréstimo
   def new
     @emprestimo = Emprestimo.new
-    
-    # --- CORREÇÃO (Passo 2) ---
-    # Carrega locatários (ordenados por email) e carros (ordenados por placa)
     @locatarios = Locatario.order(:email)
     @carros = Carro.where(isDisponivel: true).order(:placa)
   end
 
-  # Carrega os dados necessários para o formulário de EDITAR empréstimo
   def edit
-    # --- CORREÇÃO (Passo 2) ---
-    # Carrega locatários (ordenados por email) e carros (ordenados por placa)
     @locatarios = Locatario.order(:email)
     @carros = Carro.order(:placa)
   end
@@ -31,10 +39,9 @@ class Admin::EmprestimosController < Admin::BaseController
 
     respond_to do |format|
       if @emprestimo.save
-        format.html { redirect_to [:admin, @emprestimo], notice: "Emprestimo was successfully created." }
+        format.html { redirect_to [:admin, @emprestimo], notice: "Emprestimo foi criado com sucesso." }
         format.json { render :show, status: :created, location: [:admin, @emprestimo] }
       else
-        # Recarrega os dropdowns em caso de falha na validação
         @locatarios = Locatario.order(:email)
         @carros = Carro.where(isDisponivel: true).order(:placa)
         format.html { render :new, status: :unprocessable_entity }
@@ -46,10 +53,9 @@ class Admin::EmprestimosController < Admin::BaseController
   def update
     respond_to do |format|
       if @emprestimo.update(emprestimo_params)
-        format.html { redirect_to [:admin, @emprestimo], notice: "Emprestimo was successfully updated.", status: :see_other }
+        format.html { redirect_to [:admin, @emprestimo], notice: "Emprestimo foi atualizado com sucesso.", status: :see_other }
         format.json { render :show, status: :ok, location: [:admin, @emprestimo] }
       else
-        # Recarrega os dropdowns em caso de falha na validação
         @locatarios = Locatario.order(:email)
         @carros = Carro.order(:placa)
         format.html { render :edit, status: :unprocessable_entity }
@@ -62,7 +68,7 @@ class Admin::EmprestimosController < Admin::BaseController
     @emprestimo.destroy!
 
     respond_to do |format|
-      format.html { redirect_to admin_emprestimos_path, notice: "Emprestimo was successfully destroyed.", status: :see_other }
+      format.html { redirect_to admin_emprestimos_path, notice: "Emprestimo foi excluído com sucesso.", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -73,7 +79,6 @@ class Admin::EmprestimosController < Admin::BaseController
       @emprestimo = Emprestimo.find(params[:id])
     end
 
-    # Define os 'strong parameters'
     def emprestimo_params
       params.require(:emprestimo).permit(:locatario_id, :carro_id, :data_inicio, :data_fim, :data_devolucao, :valor_total, :status)
     end

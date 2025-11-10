@@ -1,9 +1,7 @@
 class CarrosController < ApplicationController
   def index
-    # --- CORREÇÃO AQUI ---
     # Em vez de começar com 'Carro.all', começamos com a regra de negócio.
     @carros = Carro.where(isDisponivel: true)
-    # --- FIM DA CORREÇÃO ---
 
     # 🔍 Busca geral (nome, marca ou placa)
     if params[:query].present?

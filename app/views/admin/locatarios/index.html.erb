@@ -1,11 +1,30 @@
 <%# app/views/admin/locatarios/index.html.erb %>
 
-<p style="color: green"><%= notice %></p>
-
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="fw-bold text-primary">Locatários</h1>
+  <h1 class="fw-bold text-primary">Gerenciar Locatários</h1>
 </div>
 
+<div class="card shadow-sm mb-4 border-0">
+  <div class="card-body">
+    <%= form_with url: admin_locatarios_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+      
+      <div class="col-md-10">
+        <%= label_tag :query, "Buscar por Email ou CPF", class: "form-label fw-semibold" %>
+        <%= text_field_tag :query, params[:query], placeholder: "Digite o email ou CPF", class: "form-control shadow-sm" %>
+      </div>
+
+      <div class="col-md-2 d-grid">
+        <%= submit_tag "Buscar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
+      </div>
+
+      <% if params[:query].present? %>
+        <div class="col-12 d-flex justify-content-end">
+          <%= link_to "Limpar busca", admin_locatarios_path, class: "btn btn-link text-secondary text-decoration-none" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
 <div class="row row-cols-1 row-cols-md-3 g-4" id="locatarios">
   <% if @locatarios.any? %>
     <% @locatarios.each do |locatario| %>
@@ -14,7 +33,11 @@
   <% else %>
     <div class="text-center text-muted mt-5">
       <h5>Nenhum locatário encontrado 😕</h5>
-      <p>Adicione um novo locatário para começar.</p>
+      <p>Tente ajustar sua busca ou adicione novos locatários.</p>
     </div>
   <% end %>
+</div>
+
+<div class="d-flex justify-content-center mt-5">
+  <%= paginate @locatarios %>
 </div>

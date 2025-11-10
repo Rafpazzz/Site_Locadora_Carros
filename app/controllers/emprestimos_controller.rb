@@ -1,58 +1,76 @@
-# app/controllers/emprestimos_controller.rb
 class EmprestimosController < ApplicationController
-  # Todos que não são admin precisam estar logados para ver estas páginas
+  # === Filtros Before Action ===
+  # 1. Garante que o usuário esteja logado para TODAS as ações
   before_action :authenticate_locatario!
+  
+  # 2. Encontra o Carro (pelo :carro_id) para 'new' e 'create'
+  before_action :set_carro, only: [:new, :create]
+  
+  # 3. Garante que o carro encontrado esteja disponível (só para 'new' e 'create')
+  before_action :garantir_carro_disponivel, only: [:new, :create]
 
-  # GET /emprestimos (A página "Meus Empréstimos")
+  # GET /emprestimos (Meus Empréstimos)
   def index
-    # Mostra apenas os empréstimos do utilizador que está logado
-    @emprestimos = current_locatario.emprestimos.order(data_inicio: :desc)
-    
-    # Você PRECISA criar a view para isto:
-    # Crie o arquivo: app/views/emprestimos/index.html.erb
+    # A lógica complexa da consulta foi movida para um método privado
+    @emprestimos = buscar_emprestimos.page(params[:page]).per(5)
   end
 
-  # GET /emprestimos/new (O formulário para alugar)
+  # GET /carros/:carro_id/emprestimos/new
   def new
-    @emprestimo = Emprestimo.new
-    # Precisamos de saber qual carro está a ser alugado (vem da URL)
-    @carro = Carro.find(params[:carro_id])
+    # O 'set_carro' e 'garantir_carro_disponivel' já rodaram
+    # A ação 'new' agora só tem 1 responsabilidade: construir o objeto
+    @emprestimo = @carro.emprestimos.build
   end
 
-  # POST /emprestimos (A ação de salvar)
+  # POST /carros/:carro_id/emprestimos
   def create
-    @carro = Carro.find(params[:emprestimo][:carro_id])
-    @emprestimo = Emprestimo.new(emprestimo_params)
-    
-    # --- LÓGICA IMPORTANTE ---
-    # Associa o empréstimo ao utilizador logado
+    # Constrói o empréstimo a partir da associação com o carro
+    @emprestimo = @carro.emprestimos.build(emprestimo_params)
+    # Adiciona o locatário logado
     @emprestimo.locatario = current_locatario
-    # Associa o empréstimo ao carro
-    @emprestimo.carro = @carro
-    # --- FIM DA LÓGICA ---
 
     if @emprestimo.save
-      # --- ESTA É A CORREÇÃO DO SEU ERRO ---
-      # Em vez de: redirect_to @emprestimo (que vai para o 'show')
-      # Mude para:
-      redirect_to emprestimos_path, notice: "Aluguel confirmado com sucesso! O valor total é R$ #{@emprestimo.valor_total}."
+      redirect_to emprestimos_path, notice: "Locação solicitada com sucesso! O carro aguarda aprovação."
     else
-      # Se falhar (ex: data errada), mostre o formulário 'new' novamente
+      # O '@carro' já foi carregado pelo 'set_carro',
+      # então o 'render :new' funciona corretamente.
       render :new, status: :unprocessable_entity
     end
   end
 
-  # Esta ação (show) causou o seu erro. 
-  # Não a estamos a usar por agora, mas vamos deixá-la aqui.
-  def show
-    # O seu erro antigo (...17-05-58.png) foi corrigido
-    @emprestimo = current_locatario.emprestimos.find(params[:id])
-  end
-
   private
 
-  # Define quais parâmetros do formulário são permitidos
+  # --- Métodos de Lógica (Query) ---
+
+  # Retorna a consulta base para a página index
+  def buscar_emprestimos
+    current_locatario.emprestimos
+                     .includes(:carro) # Otimiza (evita N+1 query)
+                     .order(data_inicio: :desc) # Mais novos primeiro
+  end
+
+  # --- Métodos de Filtro (Setup) ---
+
+  # Encontra o Carro pai
+  def set_carro
+    @carro = Carro.find(params[:carro_id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to carros_path, alert: "Carro não encontrado."
+  end
+
+  # Garante que o carro do 'set_carro' esteja disponível
+  def garantir_carro_disponivel
+    # Se o carro estiver disponível, o método termina e a ação continua
+    return if @carro.isDisponivel?
+    
+    # Se não, redireciona com um alerta
+    redirect_to carros_path, alert: "Este carro não está disponível no momento."
+  end
+
+  # --- Strong Parameters ---
+
+  # O usuário público só pode enviar as datas
   def emprestimo_params
-    params.require(:emprestimo).permit(:data_inicio, :data_fim, :carro_id)
+    params.require(:emprestimo).permit(:data_inicio, :data_fim)
   end
 end

@@ -1,4 +1,3 @@
-# app/models/emprestimo.rb
 class Emprestimo < ApplicationRecord
   
   # === Associações ===
@@ -12,15 +11,13 @@ class Emprestimo < ApplicationRecord
 
   # === Callbacks (Lógica de Negócio Automática) ===
   
-  # Calcula o valor_total antes de criar o registro
   before_validation :calcular_valor_total, on: :create
   
-  # (Passo 2) Marca o carro como indisponível após a criação do empréstimo
-  after_create :marcar_carro_como_indisponivel
-
-  # (Passo 3) Atualiza a disponibilidade do carro se o status do empréstimo mudar
+  after_create :definir_carro_como_indisponivel
   after_update :atualizar_disponibilidade_do_carro, if: :saved_change_to_status?
 
+  # A correção para o bug de "excluir"
+  after_destroy :definir_carro_como_disponivel
   
   private
 
@@ -40,27 +37,34 @@ class Emprestimo < ApplicationRecord
 
   # --- Métodos de Callback ---
 
-  # Calcula o valor total com base no número de dias e na diária do carro
   def calcular_valor_total
     return unless data_fim.present? && data_inicio.present? && carro.present?
       
     dias = (data_fim.to_date - data_inicio.to_date).to_i
-    dias = 1 if dias <= 0 # Garante o mínimo de 1 dia
+    dias = 1 if dias <= 0 # Mínimo de 1 dia
     
     self.valor_total = dias * carro.valor_diaria
   end
 
-  # Marca o carro associado como indisponível (isDisponivel = false)
-  def marcar_carro_como_indisponivel
-    carro.update(isDisponivel: false)
+  # (Gatilho 'after_create' e 'after_update')
+  def definir_carro_como_indisponivel
+    carro.update(isDisponivel: false) if carro.present?
   end
   
-  # Verifica o status do empréstimo e atualiza o carro
+  # (Gatilho 'after_update')
   def atualizar_disponibilidade_do_carro
+    # Se o admin mudou o status para "Devolvido"
     if status == "Devolvido"
-      carro.update(isDisponivel: true)
+      definir_carro_como_disponivel
+    # Se o admin mudou para "Locado" ou "Pendente"
     elsif status == "Locado" || status == "Pendente"
-      carro.update(isDisponivel: false)
+      definir_carro_como_indisponivel
     end
   end
-end
+
+  # (Gatilho 'after_destroy' e 'after_update')
+  def definir_carro_como_disponivel
+    carro.update(isDisponivel: true) if carro.present?
+  end
+  
+end # <-- Este 'end' estava em falta no seu arquivo
