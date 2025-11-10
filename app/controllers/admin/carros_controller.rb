@@ -6,7 +6,7 @@ class Admin::CarrosController < Admin::BaseController
 
     #Busca geral (LIKE para MySQL)
     if params[:query].present?
-      termo = "%#{params[:query]}%"
+      termo = "%#{params[:query].strip}%"
       @carros = @carros.where("nome LIKE ? OR marca LIKE ? OR placa LIKE ?", termo, termo, termo)
     end
 

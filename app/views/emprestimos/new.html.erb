@@ -1,6 +1,7 @@
 <div class="container my-5">
   <div class="row justify-content-center">
-    <div class="col-lg-7">  
+    <div class="col-lg-7">
+
       <%= form_with(model: [@carro, @emprestimo], local: true) do |form| %>
         <div class="card shadow-sm border-0">
           
@@ -24,10 +25,14 @@
             <div class="card mb-4">
               <div class="card-body">
                 <h5 class="card-title text-dark fw-bold"><%= @carro.marca %> <%= @carro.nome %></h5>
+                
                 <p class="card-text mb-1">
                   <span class="d-block"><strong>Placa:</strong> <%= @carro.placa %></span>
                   <span class="d-block"><strong>Ano:</strong> <%= @carro.ano.year %></span>
+                  <span class="d-block"><strong>Câmbio:</strong> <%= @carro.cambio.humanize %></span>
+                  <span class="d-block"><strong>Combustível:</strong> <%= @carro.combustivel.humanize %></span>
                 </p>
+                
                 <h4 class="text-success fw-bold mb-0"><%= number_to_currency(@carro.valor_diaria) %>/dia</h4>
               </div>
             </div>
