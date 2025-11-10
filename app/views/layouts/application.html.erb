@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    
+
+    <%= javascript_importmap_tags %>
+
     <%# Link da CDN do Bootstrap CSS %>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
   </head>
-  <body>
 
+  <body>
     <%# --- LAYOUT PÚBLICO --- %>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
@@ -19,17 +20,14 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
-            
-            <%# --- MUDANÇA AQUI --- %>
-            <%# Adiciona o link "Meus Empréstimos" se o usuário estiver logado %>
             <% if locatario_signed_in? %>
               <%= link_to "Meus Empréstimos", emprestimos_path, class: "nav-link" %>
             <% end %>
-            <%# --- FIM DA MUDANÇA --- %>
           </ul>
-          
+
           <%# Links de Login/Logout na direita %>
           <ul class="navbar-nav">
             <% if locatario_signed_in? %>
@@ -42,8 +40,8 @@
                 <%= link_to "Minha Conta", edit_locatario_registration_path, class: "nav-link" %>
               </li>
               <li class="nav-item">
-                <%# Correção do Logout (para usar GET) %>
-                <%= link_to "Sair", destroy_locatario_session_path, class: "nav-link" %>
+                <%# ✅ Correção: Logout com método DELETE e compatível com Turbo %>
+                <%= link_to "Sair", destroy_locatario_session_path, method: :delete, data: { turbo: false }, class: "nav-link" %>
               </li>
             <% else %>
               <li class="nav-item">
@@ -71,7 +69,7 @@
     <main class="container">
       <%= yield %>
     </main>
-    
+
     <%# Script da CDN do Bootstrap (JS) %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
