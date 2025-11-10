@@ -1,20 +1,41 @@
 pt-BR:
-  # --- Para corrigir o erro da data: 'l(data, format: :short)' ---
   time:
     formats:
       short: "%d/%m/%Y %H:%M"
   
-  # --- Para que 'l(data_inicio)' funcione (caso seja só 'date') ---
   date:
     formats:
       short: "%d/%m/%Y" 
 
-  # --- Para corrigir o erro do dinheiro: 'number_to_currency' ---
   number:
     currency:
       format:
-        unit: "R$"         # Símbolo da moeda
-        precision: 2       # Casas decimais
-        separator: ","     # Separador decimal
-        delimiter: "."     # Separador de milhar
-        format: "%u %n"    # Formato: R$ 1.234,56
+        unit: "R$"
+        precision: 2
+        separator: ","
+        delimiter: "."
+        format: "%u %n"
+
+  activerecord:
+    
+    # 1. Traduz os NOMES dos atributos (ex: "Password confirmation" -> "Confirmação de senha")
+    attributes:
+      locatario:
+        nome: "Nome"
+        email: "Email"
+        cpf: "CPF"
+        password: "Senha"
+        password_confirmation: "Confirmação de senha"
+
+    # 2. Traduz as MENSAGENS de erro
+    errors:
+      models:
+        locatario: # O nome do seu modelo
+          attributes:
+            cpf: # Erros do CPF (da sua outra pergunta)
+              taken: 'já está cadastrado no sistema.'
+              blank: 'não pode ficar em branco.'
+              invalid: 'deve conter 11 dígitos (apenas números).'
+
+            password_confirmation:
+              confirmation: 'não confere com a Senha.'

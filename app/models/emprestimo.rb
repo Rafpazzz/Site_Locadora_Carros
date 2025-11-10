@@ -1,7 +1,7 @@
 class Emprestimo < ApplicationRecord
   
   # === Associações ===
-  belongs_to :locatario
+  belongs_to :locatario, optional: true
   belongs_to :carro
 
   # === Validações ===
