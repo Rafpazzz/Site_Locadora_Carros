@@ -56,15 +56,16 @@ class Admin::LocatariosController < Admin::BaseController
 
   # DELETE /admin/locatarios/1
   def destroy
-    respond_to do |format|
-      if @locatario.destroy
-        format.html { redirect_to admin_locatarios_path, notice: "Locatário foi excluído com sucesso.", status: :see_other }
-        format.json { head :no_content }
-      else
-        error_message = "Não é possível excluir este locatário pois ele possui empréstimos associados."
-        format.html { redirect_to request.referrer, alert: error_message }
-        format.json { render json: { error: error_message }, status: :unprocessable_entity }
-      end
+    if @locatario.destroy
+      redirect_to admin_locatarios_path, notice: "Locatário foi excluído com sucesso. O histórico de empréstimos foi mantido (anonimizado)."
+    else  
+      error_message = @locatario.errors.full_messages.to_sentence
+      
+      # Se a mensagem estiver em branco (por outro motivo), usa uma padrão
+      error_message = "Não foi possível excluir o locatário." if error_message.blank?
+      
+      # Redireciona para a página anterior (provavelmente a 'show') com o alerta
+      redirect_to request.referrer || [:admin, @locatario], alert: error_message
     end
   end
 

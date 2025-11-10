@@ -4,33 +4,34 @@ class Locatario < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :alugueis
-  has_many :emprestimos, dependent: :restrict_with_error
-  has_many :carros, through: :alugueis
+  has_many :emprestimos
 
-  validates :nome, presence: true
-  validates :email, presence: true, uniqueness: { case_sensitive: false }
-  validates :cpf, presence: true, uniqueness: true
+  validates :nome, :cpf, presence: { message: "O CPF não pode ficar em branco." }
+  validates :cpf, uniqueness: { message: "Este CPF já está cadastrado no sistema." }
+  validates :cpf, format: { 
+      with: /\A\d{11}\z/, # Garante que são 11 dígitos (d) e nada mais (\A ... \z)
+      message: "deve conter 11 dígitos numéricos, sem pontos ou traços" 
+    }
 
-  validates :cpf, format: { with: /\A\d{11}\z/, message: "deve conter 11 dígitos numéricos (sem pontos ou traços)" }, if: -> { cpf.present? }
-
-  before_validation :limpar_cpf
-
-  before_save :formatar_nome
+  # Adicionamos um gatilho 'before_destroy' para verificar os empréstimos
+  before_destroy :desvincular_ou_impedir_exclusao
 
   private
 
-  def limpar_cpf
-    if self.cpf.present?
-      #gsub = remove tudo que nao for um digito
-      self.cpf = self.cpf.gsub(/\D/,'')
-    end
-  end
-
-  def formatar_nome
-    if self.nome.present?
-      #capitaliza o nome de uma forma inteligente
-      self.nome = self.nome.titleize
+  def desvincular_ou_impedir_exclusao
+    # 1. Verifica se existe ALGUM empréstimo que NÃO esteja "Devolvido"
+    if self.emprestimos.where.not(status: "Devolvido").exists?
+      
+      # 2. Se sim, impede a exclusão
+      # Adiciona um erro ao objeto
+      errors.add(:base, "Não é possível excluir: este locatário possui empréstimos 'Locados' ou 'Pendentes' ativos.")
+      
+      throw :abort 
+    
+    else
+      # "desvincula" o histórico (define locatario_id = NULL)
+      self.emprestimos.update_all(locatario_id: nil)
+      
     end
   end
   

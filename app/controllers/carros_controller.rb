@@ -1,33 +1,33 @@
 class CarrosController < ApplicationController
   def index
-    # Em vez de começar com 'Carro.all', começamos com a regra de negócio.
-    @carros = Carro.where(isDisponivel: true)
+    @carros = Carro.where(isDisponivel: true) # Mostra apenas disponíveis
 
-    #Busca geral (nome, marca ou placa)
     if params[:query].present?
       termo = "%#{params[:query]}%"
-      @carros = @carros.where("nome ILIKE ? OR marca ILIKE ? OR placa ILIKE ?", termo, termo, termo)
+      # Trocamos ILIKE por LIKE
+      @carros = @carros.where("nome LIKE ? OR marca LIKE ? OR placa LIKE ?", termo, termo, termo)
     end
-
-    #Filtros específicos
+   
+    # --- Filtros Adicionais ---
     @carros = @carros.where(marca: params[:marca]) if params[:marca].present?
     @carros = @carros.where(cambio: params[:cambio]) if params[:cambio].present?
     @carros = @carros.where(combustivel: params[:combustivel]) if params[:combustivel].present?
 
-    #Faixa de preço
-    if params[:valor_min].present?
-      @carros = @carros.where("valor_diaria >= ?", params[:valor_min])
-    end
-    if params[:valor_max].present?
-      @carros = @carros.where("valor_diaria <= ?", params[:valor_max])
-    end
-
     @carros = @carros.order(:marca, :nome)
 
+    @carros = @carros.page(params[:page]).per(9)
+
+    # (Lógica para PDF e CSV)
     respond_to do |format|
-      format.html { @carros = @carros.page(params[:page]).per(9) }
-      format.csv  { send_data @carros.to_csv, filename: "carros-#{Date.today}.csv" }
-      format.pdf
+      format.html
+      format.csv { send_data Carro.to_csv(@carros), filename: "carros-#{Date.today}.csv" }
+      format.pdf do
+        pdf = CarroPdf.new(@carros)
+        send_data pdf.render,
+                  filename: "carros-#{Date.today}.pdf",
+                  type: "application/pdf",
+                  disposition: "inline" # ou "attachment" para baixar
+      end
     end
   end
 

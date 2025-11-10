@@ -10,8 +10,8 @@
     <%= form_with url: admin_emprestimos_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
       
       <div class="col-md-10">
-        <%= label_tag :query, "Buscar Emprestimo", class: "form-label fw-semibold" %>
-        <%= text_field_tag :query, params[:query], placeholder: "Digite a placa ou CPF ou email", class: "form-control shadow-sm" %>
+        <%= label_tag :query, "Buscar por Placa do Carro ou CPF do Locatário", class: "form-label fw-semibold" %>
+        <%= text_field_tag :query, params[:query], placeholder: "Digite a placa ou CPF...", class: "form-control shadow-sm" %>
       </div>
 
       <div class="col-md-2 d-grid">
@@ -54,12 +54,18 @@
                                   end %>
                 <span class="badge <%= status_class %>"><%= emprestimo.status %></span>
               </td>
-              <td><%= emprestimo.locatario.email %></td>
+              
+              <td>
+                <% if emprestimo.locatario.present? %>
+                  <%# Se o locatário existe, mostra o email %>
+                  <%= emprestimo.locatario.email %>
+                <% else %>
+                  <span class="text-muted fst-italic">Locatário Excluído</span>
+                <% end %>
+              </td>
+              
               <td><%= emprestimo.carro.placa %></td>
               <td><%= number_to_currency(emprestimo.valor_total) %></td>
-              
-              <%# --- ESTA É A CORREÇÃO --- %>
-              <%# Adicionamos 'd-flex gap-1' ao <td> e o link_to "Ver" %>
               <td class="pe-4 d-flex gap-1">
                 <%= link_to "Ver", [:admin, emprestimo], class: "btn btn-primary btn-sm" %>
                 <%= link_to "Editar", edit_admin_emprestimo_path(emprestimo), class: "btn btn-warning btn-sm text-white" %>
@@ -67,7 +73,6 @@
                             data: { turbo_method: :delete, turbo_confirm: "Tem certeza?" },
                             class: "btn btn-danger btn-sm" %>
               </td>
-              <%# --- FIM DA CORREÇÃO --- %>
             </tr>
           <% end %>
         <% else %>
