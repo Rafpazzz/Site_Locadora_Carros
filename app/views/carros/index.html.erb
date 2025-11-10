@@ -3,15 +3,12 @@
     <h1 class="fw-bold text-primary mb-3 mb-md-0">
       🚘 Nossos Carros para Locação
     </h1>
-
     <div class="btn-group shadow-sm" role="group">
       <%= link_to "Exportar CSV", carros_path(format: :csv), class: "btn btn-outline-success" %>
       <%= link_to "Gerar PDF", carros_path(format: :pdf), class: "btn btn-outline-danger", target: :_blank %>
     </div>
   </div>
 
-  <%# --- CORREÇÃO 1: Esconder a Mensagem --- %>
-  <%# Esta mensagem só aparece se o utilizador NÃO estiver logado %>
   <% unless locatario_signed_in? %>
     <p class="lead text-muted mb-4">
       Confira os veículos disponíveis para locação.
@@ -21,36 +18,29 @@
       para garantir o seu carro hoje mesmo!
     </p>
   <% end %>
-  <%# --- FIM DA CORREÇÃO 1 --- %>
 
   <div class="card shadow-sm mb-5 border-0">
     <div class="card-body">
       <%= form_with url: carros_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
-        
         <div class="col-md-4">
           <%= label_tag :query, "Buscar", class: "form-label fw-semibold" %>
           <%= text_field_tag :query, params[:query], placeholder: "Nome, marca ou placa", class: "form-control shadow-sm" %>
         </div>
-
         <div class="col-md-3">
           <%= label_tag :marca, "Marca", class: "form-label fw-semibold" %>
           <%= select_tag :marca, options_for_select(Carro.distinct.pluck(:marca), params[:marca]), include_blank: "Todas", class: "form-select shadow-sm" %>
         </div>
-
         <div class="col-md-2">
           <%= label_tag :cambio, "Câmbio", class: "form-label fw-semibold" %>
           <%= select_tag :cambio, options_for_select(["manual", "automatico"], params[:cambio]), include_blank: "Todos", class: "form-select shadow-sm" %>
         </div>
-
         <div class="col-md-2">
           <%= label_tag :combustivel, "Combustível", class: "form-label fw-semibold" %>
           <%= select_tag :combustivel, options_for_select(["gasolina", "alcool", "flex", "diesel"], params[:combustivel]), include_blank: "Todos", class: "form-select shadow-sm" %>
         </div>
-
         <div class="col-md-1 d-grid">
           <%= submit_tag "Filtrar", class: "btn btn-outline-primary fw-semibold shadow-sm" %>
         </div>
-
         <div class="col-md-12 d-flex justify-content-end">
           <%= link_to "Limpar filtros", carros_path, class: "btn btn-link text-secondary text-decoration-none" %>
         </div>
@@ -63,29 +53,24 @@
       <% @carros.each do |carro| %>
         <div class="col">
           <div class="card h-100 border-0 shadow-sm hover-shadow transition">
-            <%= image_tag("car-placeholder.jpg", class: "card-img-top", alt: "Imagem do carro") if carro.respond_to?(:imagem) && carro.imagem.present? %>
-
             <div class="card-body">
               <h5 class="card-title text-dark fw-bold"><%= carro.marca %> <%= carro.nome %></h5>
               <p class="card-text mb-3">
                 <span class="d-block"><strong>Cor:</strong> <%= carro.cor %></span>
-                <%# Corrigido para ler o .year da data %>
                 <span class="d-block"><strong>Ano:</strong> <%= carro.ano.year %></span> 
                 <span class="d-block"><strong>Placa:</strong> <%= carro.placa %></span>
               </p>
-              <%# Corrigido para usar o helper de moeda %>
               <h4 class="text-success fw-bold"><%= number_to_currency(carro.valor_diaria) %>/dia</h4>
             </div>
-
             <div class="card-footer bg-transparent border-0 pb-4">
-              <%# --- CORREÇÃO 2: Esconder o Botão --- %>
-              <%# O botão só aparece se o utilizador estiver logado %>
               <% if locatario_signed_in? %>
-                <%= link_to "Alugar este Carro", new_emprestimo_path(carro_id: carro.id), class: "btn btn-primary w-100 shadow-sm" %>
+                <%# --- ESTA É A CORREÇÃO DO LINK --- %>
+                <%# Mudamos de 'new_emprestimo_path(carro_id: carro.id)' %>
+                <%# para 'new_carro_emprestimo_path(carro)' %>
+                <%= link_to "Alugar este Carro", new_carro_emprestimo_path(carro), class: "btn btn-primary w-100 shadow-sm" %>
               <% else %>
-                <%= link_to "Faça login para alugar", new_locatario_session_path, class: "btn btn-secondary w-100 shadow-sm disabled" %>
+                <%= link_to "Faça login para alugar", new_locatario_session_path, class: "btn btn-primary w-100 shadow-sm" %>
               <% end %>
-              <%# --- FIM DA CORREÇÃO 2 --- %>
             </div>
           </div>
         </div>
