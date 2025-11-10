@@ -17,23 +17,17 @@ class EmprestimosController < ApplicationController
 
   # GET /carros/:carro_id/emprestimos/new
   def new
-    # O 'set_carro' e 'garantir_carro_disponivel' já rodaram
-    # A ação 'new' agora só tem 1 responsabilidade: construir o objeto
     @emprestimo = @carro.emprestimos.build
   end
 
   # POST /carros/:carro_id/emprestimos
   def create
-    # Constrói o empréstimo a partir da associação com o carro
     @emprestimo = @carro.emprestimos.build(emprestimo_params)
-    # Adiciona o locatário logado
     @emprestimo.locatario = current_locatario
 
     if @emprestimo.save
       redirect_to emprestimos_path, notice: "Locação solicitada com sucesso! O carro aguarda aprovação."
     else
-      # O '@carro' já foi carregado pelo 'set_carro',
-      # então o 'render :new' funciona corretamente.
       render :new, status: :unprocessable_entity
     end
   end
@@ -66,8 +60,6 @@ class EmprestimosController < ApplicationController
     # Se não, redireciona com um alerta
     redirect_to carros_path, alert: "Este carro não está disponível no momento."
   end
-
-  # --- Strong Parameters ---
 
   # O usuário público só pode enviar as datas
   def emprestimo_params

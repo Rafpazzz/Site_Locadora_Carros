@@ -2,8 +2,6 @@ class Admin::EmprestimosController < Admin::BaseController
   before_action :set_emprestimo, only: %i[ show edit update destroy ]
 
   def index
-    # 1. Carrega os empréstimos e "inclui" os dados do carro e locatário
-    #    para evitar N+1 queries (melhor performance)
     @emprestimos = Emprestimo.includes(:carro, :locatario)
 
     # 2. Lógica da Busca (por Placa ou CPF)
@@ -11,12 +9,11 @@ class Admin::EmprestimosController < Admin::BaseController
       termo = "%#{params[:query]}%"
       # Adiciona 'references' para permitir o 'where' nas tabelas associadas
       @emprestimos = @emprestimos.references(:carro, :locatario).where(
-        "carros.placa LIKE ? OR locatarios.cpf LIKE ?", 
-        termo, termo
+        "carros.placa LIKE ? OR locatarios.cpf LIKE ? OR locatarios.email LIKE ?", 
+        termo, termo, termo
       )
     end
 
-    # 3. Ordena (mais novos primeiro) e aplica paginação (10 por página)
     @emprestimos = @emprestimos.order(created_at: :desc).page(params[:page]).per(10)
   end
 

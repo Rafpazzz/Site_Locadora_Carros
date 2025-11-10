@@ -3,18 +3,18 @@ class CarrosController < ApplicationController
     # Em vez de começar com 'Carro.all', começamos com a regra de negócio.
     @carros = Carro.where(isDisponivel: true)
 
-    # 🔍 Busca geral (nome, marca ou placa)
+    #Busca geral (nome, marca ou placa)
     if params[:query].present?
       termo = "%#{params[:query]}%"
       @carros = @carros.where("nome ILIKE ? OR marca ILIKE ? OR placa ILIKE ?", termo, termo, termo)
     end
 
-    # 🎯 Filtros específicos
+    #Filtros específicos
     @carros = @carros.where(marca: params[:marca]) if params[:marca].present?
     @carros = @carros.where(cambio: params[:cambio]) if params[:cambio].present?
     @carros = @carros.where(combustivel: params[:combustivel]) if params[:combustivel].present?
 
-    # 💰 Faixa de preço
+    #Faixa de preço
     if params[:valor_min].present?
       @carros = @carros.where("valor_diaria >= ?", params[:valor_min])
     end

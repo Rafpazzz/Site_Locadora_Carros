@@ -10,8 +10,8 @@
     <%= form_with url: admin_emprestimos_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
       
       <div class="col-md-10">
-        <%= label_tag :query, "Buscar por Placa do Carro ou CPF do Locatário", class: "form-label fw-semibold" %>
-        <%= text_field_tag :query, params[:query], placeholder: "Digite a placa ou CPF...", class: "form-control shadow-sm" %>
+        <%= label_tag :query, "Buscar Emprestimo", class: "form-label fw-semibold" %>
+        <%= text_field_tag :query, params[:query], placeholder: "Digite a placa ou CPF ou email", class: "form-control shadow-sm" %>
       </div>
 
       <div class="col-md-2 d-grid">
